@@ -1,0 +1,23 @@
+{
+    "compileOnSave": false,
+    "include": [
+        "**/*.ts",
+        "package.json"
+    ],
+    "compilerOptions": {
+        "outDir": "dist",
+        "sourceMap": true,
+        "declaration": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "strict": true,
+        "removeComments": true,
+        "target": "es5",
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "lib": ["es2015"]
+    }
+}

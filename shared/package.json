@@ -1,0 +1,21 @@
+{
+  "name": "@punchcontrol/shared",
+  "version": "0.0.1",
+  "types": "build/*.d.ts",
+  "author": "Jan Vorwerk",
+  "license": "GPL-3.0",
+  "private": true,
+  "scripts": {
+    "build": "cpx package.json dist/ && tsc -p .",
+    "watch": "cpx package.json dist/ && tsc -p . --watch"
+  },
+  "files": [
+    "build"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "cpx": "^1.5.0",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1"
+  }
+}

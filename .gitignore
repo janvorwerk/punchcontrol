@@ -1,0 +1,11 @@
+syntax: glob
+.vscode/
+*/node_modules/
+*/npm-debug.log
+*/dist/
+shared/**/*.d.ts
+shared/**/*.js
+shared/**/*.js.map
+**/yarn-error.log
+design/db/.*
+_sampledata/

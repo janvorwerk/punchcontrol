@@ -1,0 +1,40 @@
+{
+    "name": "punchcontrol",
+    "version": "0.0.1",
+    "main": "main.js",
+    "author": "Jan Vorwerk",
+    "license": "GPL-3.0",
+    "private": true,
+    "scripts": {
+        "pack": "electron-builder --dir",
+        "dist": "electron-builder",
+        "postinstall": "electron-builder install-app-deps"
+    },
+    "build": {
+        "productName": "punchcontrol",
+        "appId": "com.punchcontrol.app",
+        "files": [
+            "**/*",
+            {
+                "from": "../client/dist",
+                "to": "./web"
+            }
+        ],
+        "linux": {
+            "category": "Sports",
+            "asar": false
+        }
+    },
+    "dependencies": {
+        "@punchcontrol/server": "link:../server",
+        "@punchcontrol/shared": "link:../shared/dist"
+    },
+    "resolutions": {
+        "@punchcontrol/server/typeorm/yargonaut/chalk": "^2.3.2"
+    },
+    "devDependencies": {
+        "asar": "^0.14.0",
+        "electron": "^1.8.3",
+        "electron-builder": "^20.4.1"
+    }
+}

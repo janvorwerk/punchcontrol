@@ -1,0 +1,37 @@
+{
+    "name": "@punchcontrol/server",
+    "version": "0.0.1",
+    "main": "dist/server.js",
+    "author": "Jan Vorwerk",
+    "license": "GPL-3.0",
+    "private": true,
+    "scripts": {
+        "start": "nodemon --watch ./dist/ dist/main.js",
+        "build": "tsc -p .",
+        "watch": "tsc -p . --watch"
+    },
+    "dependencies": {
+        "@punchcontrol/shared": "link:../shared/dist",
+        "@types/ws": "^3.2.1",
+        "body-parser": "^1.18.2",
+        "change-case": "^3.0.1",
+        "csv-parse": "^2.0.0",
+        "express": "^4.16.2",
+        "pg": "^7.4.0",
+        "reflect-metadata": "^0.1.10",
+        "rxjs": "^5.5.2",
+        "snake-case": "^2.1.0",
+        "sqlite3": "^3.1.13",
+        "typeorm": "^0.2.0-alpha.10",
+        "ws": "^3.3.3"
+    },
+    "devDependencies": {
+        "@types/body-parser": "^1.16.8",
+        "@types/csv-parse": "^1.1.11",
+        "@types/express": "^4.0.39",
+        "@types/node": "^8.0.52",
+        "nodemon": "^1.14.3",
+        "tslint": "^5.8.0",
+        "typescript": "^2.6.1"
+    }
+}

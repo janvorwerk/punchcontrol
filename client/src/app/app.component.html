@@ -1,0 +1,27 @@
+<div>
+    <p>
+        Welcome <span *ngIf="(whoami | async) as d">{{d.firstName}} {{d.lastName}}</span>
+    </p>
+    <hot-table
+        [hotId]="hotId"
+        [data]="data"
+        [colHeaders]="headers"
+        columnSorting="true"
+        (afterChange)="afterTableChange($event.params)">
+
+        <hot-column
+            *ngFor="let column of hotcolumns"
+            [readOnly]="column.readOnly"
+        >
+        </hot-column>
+
+    </hot-table>
+    <!-- <table>
+        <tr *ngFor="let tm of teamMembers | async">
+            <td>{{tm.team?.name}}</td>
+            <td>{{tm.bibSubnum}}</td>
+            <td>{{tm.person?.firstName}}</td>
+            <td>{{tm.person?.lastName}}</td>
+        </tr>
+    </table> -->
+</div>
