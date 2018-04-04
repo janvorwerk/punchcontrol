@@ -1,0 +1,38 @@
+<table *ngIf="data" class="nosticky"
+    (mousedown)="onMouseDown($event)"
+    (mousemove)="onMouseMove($event)"
+    (mouseup)="onMouseUp($event)"
+    (mouseleave)="onMouseLeave($event)"
+
+    (dblclick)="onDoubleClick($event)"
+    (keypress)="onKeyPress($event)"
+    (keyup.escape)="onDiscardEdit   ($event)"
+
+    (copy)="onCopy($event)"
+>
+    <thead>
+        <tr> <!-- This row is for the background only: it spans all columns -->
+            <td [attr.colspan]="columns.length">
+                <div class="stickable full" [ngStyle]="{'top.px':top, 'width.px': tableWidth}"></div>
+            </td>
+        </tr>
+        <tr>  <!-- This row is for the real headers -->
+            <th *ngFor="let col of columns; index as c" [attr.data-col]="c" [ngClass]="{'selected': isColSelected(c)}">
+                <div class="stickable" [ngStyle]="{'top.px':top}"> <!-- only visible when scrolling out -->
+                    <span class="header" (click)="sortColumn(c)">{{col.header}}</span>
+                </div>
+                <div> <!-- normal visibility: scrolling out with content -->
+                    <span class="header" (click)="sortColumn(c)">{{col.header}}</span>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of data.displayRows; index as r" [attr.data-row]="r">
+            <td *ngFor="let td of getRow(r); index as c" [attr.data-col]="c" [ngClass]="{'selected': isSelected(r,c), 'readonly': !!columns[c].readonly}">
+                {{td}}
+            </td>
+        </tr>
+    </tbody>
+</table>
+<div class="bottom"></div>

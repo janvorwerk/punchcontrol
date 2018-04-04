@@ -1,0 +1,50 @@
+$background: #2f1505; // FIXME theme the whole app
+$tabBackground: desaturate(lighten($background, 10%), 50%);
+
+$margin: 8px;
+$radius: 5px;
+:host {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+.tab {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    margin-top: $margin;
+    border-top-left-radius: $radius;
+    border-top-right-radius: $radius;
+    &.enabled {
+        background-color: $tabBackground;
+        color: white;
+        &:not(.selected):hover {
+            cursor: pointer;
+            background-color: #775f50;
+        }
+    }
+    &.disabled {
+        background-color: $tabBackground;
+        color: $background;
+    }
+    &.selected {
+        background-color: #b7a59c;
+        color: black;
+    }
+}
+
+.tab:not(:first-of-type) {
+    margin-left: $margin / 2;
+}
+
+.tab:not(:last-of-type) {
+    margin-right: $margin / 2;
+}
+
+a {
+    flex-grow: 1;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 1.2rem;
+}

@@ -1,0 +1,55 @@
+$headerColor: #bbaba2;
+table {
+    text-align: left;
+    border-collapse: collapse;
+    empty-cells: show;
+    border: solid  $headerColor;
+    user-select: none;
+}
+thead {
+    background-color: $headerColor;
+    .selected {
+        background-color: saturate($headerColor, 50%);
+    }
+}
+td[contenteditable=true] {
+    background-color: white;
+}
+.stickable {
+    position: fixed;
+}
+.nosticky .stickable {
+    visibility: collapse;
+}
+.bottom {
+    //    height: 0.1px; // try to hide our copy buffer without preventing copy
+    overflow: hidden;
+}
+.full {
+    background-color: $headerColor;
+    height: 1.2em;
+}
+thead > tr > td:first-of-type {
+    padding: 0px;
+}
+.header:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+tbody {
+    .selected {
+        background-color: saturate($headerColor, 10%);
+    }
+    .readonly {
+        color: darken($headerColor, 20%);
+    }
+    tr {
+        &:nth-of-type(2n) {
+            background-color: lighten($headerColor, 5%);
+        }
+    }
+    td {
+        padding: 2px;
+        border: 1px solid lighten($headerColor, 10%);
+    }
+}

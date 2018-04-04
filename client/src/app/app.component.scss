@@ -1,0 +1,74 @@
+$background: #2f1505;
+$topAndLeft: 60px;
+$margin: 8px;
+.whole {
+    display: grid;
+    grid-template-areas: 'logo head rightmargin' 'nav main rightmargin' 'bottommargin bottommargin bottommargin';
+    height: 100vh;
+    grid-template-columns: $topAndLeft 1fr $margin;
+    grid-template-rows: $topAndLeft 1fr $margin;
+    &>app-icon {
+        grid-area: logo;
+        background-color: $background;
+        padding: 8px;
+    }
+    overflow: hidden;
+}
+
+app-nav {
+    grid-area: nav;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: $background;
+}
+
+header {
+    grid-area: head;
+    background-color: $background;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    &>* {
+        line-height: $topAndLeft - $margin;
+        color: white;
+        &:not(:first-child) {
+            margin-left: $margin;
+        }
+        &:not(:last-child) {
+            margin-right: $margin;
+        }
+    }
+    app-tabs {
+        flex: 5 1 50%;
+    }
+    .separator {
+        flex: 1 1 2em;
+    }
+    app-icon {
+        flex: 0 1 32px;
+    }
+    app-search {
+        flex: 1 2 10em;
+    }
+    app-current-user {
+        flex: 0;
+    }
+}
+
+.rightmargin {
+    grid-area: rightmargin;
+    background-color: $background;
+}
+
+footer {
+    grid-area: bottommargin;
+    background-color: $background;
+}
+
+app-scroll {
+    grid-area: main;
+    background-color: #d8c9c2;
+    padding: 5px;
+}

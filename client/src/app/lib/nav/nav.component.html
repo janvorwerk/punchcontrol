@@ -1,0 +1,11 @@
+<nav>
+    <app-icon icon="register" class="icon" routerLink="/register" routerLinkActive="selected" title="register a runner"></app-icon>
+    <app-icon icon="runner" class="icon" [routerLink]="['/runners', {race: selectedRaceId}]" routerLinkActive="selected" title="runners"></app-icon>
+    <app-icon icon="team" class="icon" [routerLink]="['/teams', {race: selectedRaceId}]" routerLinkActive="selected" title="teams"></app-icon>
+    <app-icon icon="race" class="icon" [routerLink]="['/race', {race: selectedRaceId}]" routerLinkActive="selected" title="race setup"></app-icon>
+    <app-icon icon="time" class="icon" [routerLink]="['/starttime', {race: selectedRaceId}]" routerLinkActive="selected" title="start times"></app-icon>
+    <app-icon icon="listing" class="icon" [routerLink]="['/listings', {race: selectedRaceId}]" routerLinkActive="selected" title="listings"></app-icon>
+    <app-icon icon="statistics" class="icon" [routerLink]="['/statistics', {race: selectedRaceId}]" routerLinkActive="selected" title="statistics"></app-icon>
+    <div></div>
+    <app-icon icon="admin" class="icon" routerLink="/admin" routerLinkActive="selected" title="admin"></app-icon>
+</nav>

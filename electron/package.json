@@ -7,8 +7,7 @@
     "private": true,
     "scripts": {
         "pack": "electron-builder --dir",
-        "dist": "electron-builder",
-        "postinstall": "electron-builder install-app-deps"
+        "dist": "electron-builder"
     },
     "build": {
         "productName": "punchcontrol",
@@ -21,20 +20,16 @@
             }
         ],
         "linux": {
-            "category": "Sports",
-            "asar": false
+            "category": "Sports"
         }
     },
     "dependencies": {
         "@punchcontrol/server": "link:../server",
         "@punchcontrol/shared": "link:../shared/dist"
     },
-    "resolutions": {
-        "@punchcontrol/server/typeorm/yargonaut/chalk": "^2.3.2"
-    },
     "devDependencies": {
         "asar": "^0.14.0",
         "electron": "^1.8.3",
-        "electron-builder": "^20.4.1"
+        "electron-builder": "^20.6.0"
     }
 }

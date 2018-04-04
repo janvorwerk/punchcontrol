@@ -1,0 +1,27 @@
+$transition: 200ms;
+:host {
+    &.selected {
+        border: solid;
+        border-color: #ab623c;
+    }
+    &:hover {
+        &.selected {
+            .icon {
+                transform: scale(1);
+                transition: transform $transition;
+            }
+        }
+        &:not(.selected) {
+            .icon {
+                cursor: pointer;
+                transform: scale(1.2);
+                transition: transform $transition;
+            }
+        }
+    }
+}
+
+.icon {
+    fill: white;
+    vertical-align: middle;
+}

@@ -16,8 +16,8 @@ export class SampleService {
     private _tmData: Observable<TableData>;
 
     constructor(private http: HttpClient) {
-        this._data = this.http.get<PersonDto>('/api/whoami');
-        this._tmData = this.http.get<TableData>('/api/tm');
+        this._data = this.http.get<PersonDto>('/api/auth/whoami');
+        this._tmData = this.http.get<TableData>('/api/db/teammembers');
     }
 
     get data(): Observable<PersonDto> {
@@ -29,6 +29,6 @@ export class SampleService {
     }
 
     patch(patches: PatchDto[]): Observable<any> {
-        return this.http.patch('/api/patch', patches);
+        return this.http.patch('/api/db/patch', patches);
     }
 }

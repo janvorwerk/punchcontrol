@@ -87,6 +87,7 @@ export class WebSocketService {
     }
     private openWebSocket(authToken: string): void {
         if (this.ws === null) {
+            LOGGER.debug(() => `Trying to open WebSocket on ${WS_URI}`);
             this.ws = new WebSocket(WS_URI, SUPPORTED_VERSIONS);
             this.ws.onopen = () => {
                 LOGGER.debug(`WebSocket opened, sending authentication`);

@@ -1,0 +1,21 @@
+{
+    "name": "@punchcontrol/root",
+    "version": "0.0.1",
+    "author": "Jan Vorwerk",
+    "license": "GPL-3.0",
+    "private": true,
+    "scripts": {
+        "prepare": "gulp prepare",
+        "watch": "gulp watch"
+    },
+    "devDependencies": {
+        "del": "^3.0.0",
+        "gulp": "^3.9.1",
+        "gulp-cheerio": "^0.6.3",
+        "gulp-print": "^5.0.0",
+        "gulp-rename": "^1.2.2",
+        "gulp-svgmin": "^1.2.4",
+        "gulp-svgstore": "^6.1.1",
+        "gulp-util": "^3.0.8"
+    }
+}

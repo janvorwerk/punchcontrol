@@ -1,23 +1,25 @@
 import * as csvparse from 'csv-parse';
 import * as fs from 'fs';
-import * as util from 'util';
-import { Connection } from 'typeorm/connection/Connection';
-import { createConnection } from 'typeorm';
-import { CustomNamingStrategy } from './custom_naming_strategy';
-import { EntityManager } from 'typeorm/entity-manager/EntityManager';
-import { Organisation } from './entities/organisation';
-import { Person } from './entities/person';
-import { Race } from './entities/race';
-import { RacingEvent } from './entities/racing_event';
-import { Session } from 'inspector';
-import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions';
-import { Team } from './entities/team';
-import { TeamClass } from './entities/team_class';
-import { TeamMember } from './entities/team_member';
-import { TeamMemberClass } from './entities/team_member_class';
-import { openDatabase } from './dbconnection';
 import { connect } from 'http2';
+import { Session } from 'inspector';
+import { createConnection } from 'typeorm';
+import { Connection } from 'typeorm/connection/Connection';
+import { SqliteConnectionOptions } from 'typeorm/driver/sqlite/SqliteConnectionOptions';
+import { EntityManager } from 'typeorm/entity-manager/EntityManager';
+import * as util from 'util';
+import { CustomNamingStrategy } from '../db/custom_naming_strategy';
+import { Organisation } from '../entities/organisation';
+import { Person } from '../entities/person';
+import { Race } from '../entities/race';
+import { RacingEvent } from '../entities/racing_event';
+import { Team } from '../entities/team';
+import { TeamClass } from '../entities/team_class';
+import { TeamMember } from '../entities/team_member';
+import { TeamMemberClass } from '../entities/team_member_class';
+import { LOGGING } from './logging';
 
+const LOGGER = LOGGING.
+getLogger(__filename);
 
 class FfcoUtils {
     private static readonly CENTURY_SWAP_YEAR = new Date().getFullYear() - 2000;
@@ -57,17 +59,17 @@ class DatabaseWriter {
         }
         this.race = race;
     }
-    async storeRelay() {
+    async storeRelay(): Promise<number> {
         await this.storeOrganisations();
         await this.storeTeamClasses();
-        await this.storeTeamsAndPersons();
+        return await this.storeTeamsAndPersons();
     }
-    async storeIndividual() {
+    async storeIndividual(): Promise<number> {
         throw new Error('not implemented');
     }
 
     private async storeOrganisations() {
-        console.log(`Storing Organisation...`);
+        LOGGER.info(`Storing Organisation...`);
         let tmp = this.data.map(fields => [fields[8], fields[9]] as [string, string]);
         const orgs = new Map<string, string>(Array.from(tmp));
         const repoOrganisation = this.em.getRepository(Organisation);
@@ -79,7 +81,7 @@ class DatabaseWriter {
     }
 
     private async storeTeamClasses() {
-        console.log(`Storing TeamClass & TeamMemberClass...`);
+        LOGGER.info(`Storing TeamClass & TeamMemberClass...`);
         const tmp = this.data.map(
             fields => [fields[12], { name: fields[13], count: fields[14] }] as [string, { name: string, count: string }]
         );
@@ -114,9 +116,9 @@ class DatabaseWriter {
         }
     }
 
-    private async storeTeamsAndPersons() {
-        console.log(`Storing Team & TeamMember & Person...`);
-
+    private async storeTeamsAndPersons(): Promise<number> {
+        LOGGER.info(`Storing Team & TeamMember & Person...`);
+        let runnersCount = 0;
         for (let fields of this.data) {
             const teamClassName = fields[12];
             const teamClass = this.teamClasses.get(teamClassName);
@@ -160,19 +162,21 @@ class DatabaseWriter {
                     tm.person = person;
                 }
                 await this.em.save(TeamMember, tm);
+                runnersCount++;
             }
         }
+        return runnersCount;
     }
 }
 
 
-export async function importFccoRegistrationCsv(connection: Connection, csvContent: string) {
+export async function importFccoRegistrationCsv(connection: Connection, csvContent: string): Promise<number> {
     const parseAsync = util.promisify<string, csvparse.Options, string[][]>(csvparse);
     const data = await parseAsync(csvContent, { delimiter: ';', rowDelimiter: '\r\n', relax_column_count: true });
     const headers = data[0];
     const isRelay = headers[14] === 'Relayeurs';
 
-    await connection.transaction(async transactionalEntityManager => {
+    const importedRunners = await connection.transaction(async transactionalEntityManager => {
         const dbwriter = new DatabaseWriter(transactionalEntityManager, data.slice(1));
         await dbwriter.init();
         if (isRelay) {
@@ -181,17 +185,18 @@ export async function importFccoRegistrationCsv(connection: Connection, csvConte
             return await dbwriter.storeIndividual();
         }
     });
+    return importedRunners
 }
 
-/** for testing */
-async function main(targetRaceId: number, filename: string) {
-    const connection = await openDatabase();
-    const content = await util.promisify(fs.readFile)(filename, 'latin1');
-    await importFccoRegistrationCsv(connection, content);
-}
+// /** for testing */
+// async function main(targetRaceId: number, filename: string) {
+//     const connection = await openDatabase();
+//     const content = await util.promisify(fs.readFile)(filename, 'latin1');
+//     await importFccoRegistrationCsv(connection, content);
+// }
 
-if (!module.parent) { // only if running this module for testing
-    main(1, '/home/jan/code/punchcontrol/_sampledata/inscriptions1316.csv')
-        .then(() => console.log(`Done`))
-        .catch((err: Error) => console.error(err));
-}
+// if (!module.parent) { // only if running this module for testing
+//     main(1, '/home/jan/code/punchcontrol/_sampledata/inscriptions1316.csv')
+//         .then(() => LOGGER.info(`Done`))
+//         .catch((err: Error) => LOGGER.error(err));
+// }

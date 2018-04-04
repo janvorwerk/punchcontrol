@@ -1,27 +1,18 @@
-<div>
-    <p>
-        Welcome <span *ngIf="(whoami | async) as d">{{d.firstName}} {{d.lastName}}</span>
-    </p>
-    <hot-table
-        [hotId]="hotId"
-        [data]="data"
-        [colHeaders]="headers"
-        columnSorting="true"
-        (afterChange)="afterTableChange($event.params)">
-
-        <hot-column
-            *ngFor="let column of hotcolumns"
-            [readOnly]="column.readOnly"
-        >
-        </hot-column>
-
-    </hot-table>
-    <!-- <table>
-        <tr *ngFor="let tm of teamMembers | async">
-            <td>{{tm.team?.name}}</td>
-            <td>{{tm.bibSubnum}}</td>
-            <td>{{tm.person?.firstName}}</td>
-            <td>{{tm.person?.lastName}}</td>
-        </tr>
-    </table> -->
+<div class="whole">
+    <app-icon icon="logo" routerLink="/"></app-icon>
+    <header>
+        <app-tabs></app-tabs>
+        <div class="separator"></div>
+        <app-icon icon="undo" class="icon" title="undo"></app-icon>
+        <app-icon icon="redo" class="icon" title="redo"></app-icon>
+        <app-search></app-search>
+        <app-current-user></app-current-user>
+        <app-icon icon="help" class="icon" title="help"></app-icon>
+    </header>
+    <app-nav></app-nav>
+    <footer></footer>
+    <div class="rightmargin"></div>
+    <app-scroll>
+        <router-outlet></router-outlet>
+    </app-scroll>
 </div>

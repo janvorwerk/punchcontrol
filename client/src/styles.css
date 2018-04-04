@@ -1,16 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~handsontable/dist/handsontable.full.css';
-
-.handsontable th, .handsontable td {
-    height: 20px;
-    line-height: 20px;
-}
-.htCore {
-    font-size: 0.8rem;
-}
-.handsontable thead tr:first-child th {
-    background-color: hsla(8,20%,70%, .5);
-}
-.handsontable tr:nth-child(2n) td {
-    background-color: hsla(8,20%,80%, .5);
+@import '~normalize.css/normalize.css';
+html {
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
 }

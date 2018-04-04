@@ -1,5 +1,5 @@
 import { snakeCase } from 'change-case';
-import { DefaultNamingStrategy, NamingStrategyInterface } from "typeorm";
+import { DefaultNamingStrategy, NamingStrategyInterface } from 'typeorm';
 
 export class CustomNamingStrategy extends DefaultNamingStrategy implements NamingStrategyInterface {
 
