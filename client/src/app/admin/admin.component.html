@@ -1,3 +1,6 @@
 <p>
   This is the administration panel
 </p>
+<select [(ngModel)]="selectedTheme" (ngModelChange)="onThemeChange()">
+    <option *ngFor="let theme of allThemes" [ngValue]="theme">{{theme}}</option>
+</select>

@@ -6,13 +6,13 @@ $transition: 200ms;
     }
     &:hover {
         &.selected {
-            .icon {
+            svg {
                 transform: scale(1);
                 transition: transform $transition;
             }
         }
         &:not(.selected) {
-            .icon {
+            svg {
                 cursor: pointer;
                 transform: scale(1.2);
                 transition: transform $transition;
@@ -21,7 +21,9 @@ $transition: 200ms;
     }
 }
 
-.icon {
-    fill: white;
+svg {
     vertical-align: middle;
+}
+use {
+    fill: white;
 }

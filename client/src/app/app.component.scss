@@ -9,7 +9,7 @@ $margin: 8px;
     grid-template-rows: $topAndLeft 1fr $margin;
     &>app-icon {
         grid-area: logo;
-        background-color: $background;
+        // background-color: $background;
         padding: 8px;
     }
     overflow: hidden;
@@ -20,7 +20,7 @@ app-nav {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background-color: $background;
+    // background-color: $background;
 }
 
 header {
@@ -59,12 +59,12 @@ header {
 
 .rightmargin {
     grid-area: rightmargin;
-    background-color: $background;
+    // background-color: $background;
 }
 
 footer {
     grid-area: bottommargin;
-    background-color: $background;
+    // background-color: $background;
 }
 
 app-scroll {

@@ -1,7 +1,9 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
+
 import { AdminComponent } from './admin/admin.component';
 import { AppComponent } from './app.component';
 import { Err404Component } from './err404/err404.component';
@@ -26,6 +28,7 @@ import { SearchComponent } from './search/search.component';
 import { CurrentUserComponent } from './lib/current-user/current-user.component';
 import { HelpComponent } from './lib/help/help.component';
 import { RacesService } from './data/races.service';
+import { ThemeService } from './lib/theme.service';
 
 const appRoutes: Routes = [
     { path: 'register', component: RegisterComponent },
@@ -73,9 +76,10 @@ const appRoutes: Routes = [
             // { enableTracing: true } // <-- debugging purposes only
         ),
         BrowserModule,
+        FormsModule,
         HttpClientModule
     ],
-    providers: [SampleService, WebSocketService, RacesService],
+    providers: [SampleService, WebSocketService, RacesService, ThemeService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }
