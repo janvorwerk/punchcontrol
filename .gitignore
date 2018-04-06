@@ -15,3 +15,5 @@ node_modules/
 punchcontrol.log
 logs/
 **/out-tsc/
+
+client/src/themes/gen/_partials\.scss

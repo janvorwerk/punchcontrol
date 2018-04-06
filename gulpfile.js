@@ -6,8 +6,10 @@ const svgmin = require('gulp-svgmin');
 const svgstore = require('gulp-svgstore');
 const cheerio = require('gulp-cheerio');
 const del = require('del');
+const sass = require('gulp-sass');
+const fs = require('fs');
 // const favicons = require("gulp-favicons");
-
+const path = require('path');
 // ====================================
 // Super-tasks
 // ====================================
@@ -79,3 +81,27 @@ gulp.task('clean:svg', function () {
 //     .on("error", gutil.log)
 //     .pipe(gulp.dest("./_favicon"));
 // });
+
+// THEMES
+const es = require('event-stream')
+const THEMES_SRC_PATH = 'client/src/themes';
+const THEMES_DEST_PATH = 'client/src/assets/gen';
+// This task generates a list of all partials files spread over the app
+// this generated patial will be imported by the themes.
+gulp.task('partials', function() {
+    gulp.src('client/src/app/**/_*.theme.scss')
+        .pipe(es.map(function(file, cb) {
+            const parsedPath = path.parse(file.path);
+            const relFolder = path.relative(__dirname, parsedPath.dir);
+            const name = parsedPath.name.slice(1);
+            return cb(null, `@import '${relFolder}/${name}';\n`);
+        }))
+        // .pipe(es.join())
+        .pipe(fs.createWriteStream(`${THEMES_SRC_PATH}/gen/_partials.scss`));
+});
+gulp.task('themes', ['partials'], function() {
+    gulp.src(`${THEMES_SRC_PATH}/theme-*.scss`)
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest(THEMES_DEST_PATH))
+        .pipe(print());
+});
