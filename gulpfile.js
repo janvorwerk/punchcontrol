@@ -13,7 +13,7 @@ const path = require('path');
 // ====================================
 // Super-tasks
 // ====================================
-gulp.task('prepare', ['svg']);
+gulp.task('prepare', ['svg', 'themes']);
 gulp.task('clean', ['clean:svg']);
 gulp.task('watch', ['watch:svg']);
 
