@@ -2,6 +2,10 @@ $transition: 200ms;
 :host {
     &.selected {
         border: solid;
+        // moving this color to the theme is hard because the
+        // routerLinkActive is a directive that selects
+        // a class rather than returning some kind of
+        // boolean which would leave us with more freedom...
         border-color: #ab623c;
     }
     &:hover {
@@ -23,7 +27,4 @@ $transition: 200ms;
 
 svg {
     vertical-align: middle;
-}
-use {
-    fill: white;
 }

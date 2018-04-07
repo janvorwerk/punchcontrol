@@ -5,7 +5,7 @@ const LOGGER = LOGGING.getLogger('ThemeService');
 
 const THEMES = {
     'dark-brown': 0,
-    // 'light-brown': 0,
+    'light-brown': 0,
     'dark-orange': 0,
 };
 export type Theme = keyof typeof THEMES;

@@ -13,7 +13,7 @@ export class IconComponent implements OnInit {
 
     fill: Observable<string>;
     constructor(themeService: ThemeService, private element: ElementRef) {
-        this.fill = themeService.theme.delay(100).map(() => window.getComputedStyle(element.nativeElement).color);
+        this.fill = themeService.theme.delay(100).map(() => window.getComputedStyle(element.nativeElement.querySelector('svg')).color);
     }
 
     @Input()

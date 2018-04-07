@@ -5,6 +5,7 @@
 }
 [punch-tab=selected], [punch-tab=enabled]:hover {
     background-color: $primaryLight;
+    color: $textOnLight;
 }
 [punch-tab=disabled] {
     background-color: $primaryDark;
