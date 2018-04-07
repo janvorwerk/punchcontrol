@@ -116,7 +116,7 @@ gulp.task('themes', ['partials'], function () {
         .pipe(print());
 });
 gulp.task('watch:themes', ['themes'], () => {
-    const w = gulp.watch(`${THEMES_SRC_PATH}/**`, ['themes']);
+    const w = gulp.watch([THEMES_PARTIALS, `${THEMES_SRC_PATH}/**`], ['themes']);
     w.on('change', logchange);
     return w;
 });

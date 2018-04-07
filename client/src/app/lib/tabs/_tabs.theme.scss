@@ -1,0 +1,12 @@
+[punch-tab=enabled] {
+    background-color: $primary;
+    color: $textOnPrimary;
+    cursor: pointer;
+}
+[punch-tab=selected], [punch-tab=enabled]:hover {
+    background-color: $primaryLight;
+}
+[punch-tab=disabled] {
+    background-color: $primaryDark;
+    filter: blur(1px);
+}

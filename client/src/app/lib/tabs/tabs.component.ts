@@ -33,7 +33,10 @@ export class TabsComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.sub.forEach(s => s.unsubscribe());
     }
-    isSelected(id: number) {
-        return this.selectedTab === id;
+    // isSelected(id: number) {
+    //     return this.selectedTab === id;
+    // }
+    getTabState(id: number) {
+        return this.selectedTab === id ? 'selected' : 'enabled';
     }
 }

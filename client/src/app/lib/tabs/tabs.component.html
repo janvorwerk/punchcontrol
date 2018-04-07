@@ -1,12 +1,11 @@
 <ng-container *ngFor="let race of races">
-    <div *ngIf="tabsEnabled"
+    <div [attr.punch-tab]="getTabState(race.id)" *ngIf="tabsEnabled"
          [routerLink]="[ './', {race: race.id}]"
-         class="tab enabled"
-         [ngClass]="{'selected': isSelected(race.id)}">
+         class="tab">
         <a>{{race.name}}</a>
     </div>
-    <div *ngIf="!tabsEnabled"
-         class="tab disabled">
+    <div punch-tab="disabled" *ngIf="!tabsEnabled"
+         class="tab">
         <a>{{race.name}}</a>
     </div>
 </ng-container>
