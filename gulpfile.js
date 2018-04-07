@@ -14,8 +14,8 @@ const path = require('path');
 // Super-tasks
 // ====================================
 gulp.task('prepare', ['svg', 'themes']);
-gulp.task('clean', ['clean:svg']);
-gulp.task('watch', ['watch:svg']);
+gulp.task('clean', ['clean:svg', 'clean:partials']);
+gulp.task('watch', ['watch:svg', 'watch:themes']);
 
 // ====================================
 // Utility functions
@@ -33,7 +33,7 @@ function logchange(event) {
 const SVG_SRC_PATH = 'design/svg/**/*.svg';
 const SVG_DEST_PATH = 'client/src/assets/gen';
 gulp.task('svg', function () {
-    gulp
+    return gulp
         .src(SVG_SRC_PATH)
         .pipe(cheerio({
             run: function ($) {
@@ -50,7 +50,7 @@ gulp.task('svg', function () {
             }
         }))
         .pipe(svgmin())
-        .pipe(svgstore({inlineSvg: true }))
+        .pipe(svgstore({ inlineSvg: true }))
         .pipe(gulp.dest(SVG_DEST_PATH))
         .pipe(print());
 });
@@ -86,22 +86,37 @@ gulp.task('clean:svg', function () {
 const es = require('event-stream')
 const THEMES_SRC_PATH = 'client/src/themes';
 const THEMES_DEST_PATH = 'client/src/assets/gen';
+const THEMES_PARTIALS = 'client/src/app/**/_*.theme.scss';
+const THEMES_GEN_PARTIALS = `${THEMES_SRC_PATH}/gen/_partials.scss`;
+
 // This task generates a list of all partials files spread over the app
 // this generated patial will be imported by the themes.
-gulp.task('partials', function() {
-    gulp.src('client/src/app/**/_*.theme.scss')
-        .pipe(es.map(function(file, cb) {
+gulp.task('partials', function (done) {
+    gulp.src(THEMES_PARTIALS)
+        .pipe(es.map(function (file, cb) {
             const parsedPath = path.parse(file.path);
             const relFolder = path.relative(__dirname, parsedPath.dir);
             const name = parsedPath.name.slice(1);
+            gutil.log(`Found ${relFolder}/${name}`);
             return cb(null, `@import '${relFolder}/${name}';\n`);
         }))
-        // .pipe(es.join())
-        .pipe(fs.createWriteStream(`${THEMES_SRC_PATH}/gen/_partials.scss`));
+        .pipe(fs.createWriteStream(THEMES_GEN_PARTIALS))
+        .on('finish', function () {
+            gutil.log(`Created ${THEMES_GEN_PARTIALS}`);
+            done();
+        });
 });
-gulp.task('themes', ['partials'], function() {
-    gulp.src(`${THEMES_SRC_PATH}/theme-*.scss`)
+gulp.task('clean:partials', () => {
+    return del([THEMES_GEN_PARTIALS]);
+});
+gulp.task('themes', ['partials'], function () {
+    return gulp.src(`${THEMES_SRC_PATH}/theme-*.scss`)
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest(THEMES_DEST_PATH))
         .pipe(print());
+});
+gulp.task('watch:themes', ['themes'], () => {
+    const w = gulp.watch(`${THEMES_SRC_PATH}/**`, ['themes']);
+    w.on('change', logchange);
+    return w;
 });
