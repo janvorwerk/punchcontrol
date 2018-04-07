@@ -20,9 +20,6 @@ export class IconComponent implements OnInit {
     }
 
     @Input()
-    title = '';
-
-    @Input()
     icon = '';
 
     ngOnInit() {

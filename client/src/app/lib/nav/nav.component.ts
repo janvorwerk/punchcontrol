@@ -9,7 +9,7 @@ import { RacesService } from '../../data/races.service';
 export class NavComponent implements OnInit {
     selectedRaceId: number;
     top = [
-        {link: '/register', icon: 'register', title: 'register a runner'},
+        {link: '/register', icon: 'register', title: 'Register a runner'},
         {link: ['/runner', {race: this.selectedRaceId}], icon: 'runner', title: 'Runners'},
         {link: ['/teams', {race: this.selectedRaceId}], icon: 'team', title: 'Teams'},
         {link: ['/race', {race: this.selectedRaceId}], icon: 'race', title: 'Race setup'},

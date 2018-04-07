@@ -4,7 +4,7 @@
         <app-icon #icon
             [icon]="action.icon"
             [routerLink]="action.link"
-            [title]="action.title"
+            title="{{action.title}}"
             routerLinkActive
             class="icon"
             [attr.punch-icon]="icon.state(action.link)"
