@@ -8,6 +8,7 @@
     color: $textOnLight;
 }
 [punch-tab=disabled] {
+    color: $textOnPrimary;
     background-color: $primaryDark;
     filter: blur(1px);
 }

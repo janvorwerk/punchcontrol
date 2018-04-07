@@ -32,7 +32,6 @@ header {
     align-items: baseline;
     &>* {
         line-height: $topAndLeft - $margin;
-        color: white;
         &:not(:first-child) {
             margin-left: $margin;
         }

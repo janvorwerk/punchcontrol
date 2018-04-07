@@ -1,4 +1,7 @@
 [punch-icon] {
     color: $textOnPrimary;
 }
-
+[punch-icon=active] {
+    border: solid;
+    border-color: $textOnPrimary;
+}

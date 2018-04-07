@@ -1,18 +1,18 @@
-<div class="whole punch-background">
-    <app-icon icon="logo" routerLink="/"></app-icon>
+<div punch-body class="whole">
+    <app-icon punch-icon icon="logo" routerLink="/"></app-icon>
     <header>
         <app-tabs></app-tabs>
         <div class="separator"></div>
-        <app-icon icon="undo" class="icon" title="undo"></app-icon>
-        <app-icon icon="redo" class="icon" title="redo"></app-icon>
+        <app-icon punch-icon icon="undo" class="icon" title="undo"></app-icon>
+        <app-icon punch-icon icon="redo" class="icon" title="redo"></app-icon>
         <app-search></app-search>
         <app-current-user></app-current-user>
-        <app-icon icon="help" class="icon" title="help"></app-icon>
+        <app-icon punch-icon icon="help" class="icon" title="help"></app-icon>
     </header>
     <app-nav></app-nav>
     <footer></footer>
     <div class="rightmargin"></div>
-    <app-scroll>
+    <app-scroll punch-main>
         <router-outlet></router-outlet>
     </app-scroll>
 </div>
