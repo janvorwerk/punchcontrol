@@ -7,19 +7,32 @@ import { RacesService } from '../../data/races.service';
     styleUrls: ['./nav.component.scss']
 })
 export class NavComponent implements OnInit {
-    selectedRaceId: number;
-    top = [
+    _selectedRaceId: number;
+    targets = [
+        // the targets with an array are actually expecting the raceId, but we cannot
+        // set it here because it would not be dynamic. This is the role of getTargetLink(index).
         {link: '/register', icon: 'register', title: 'Register a runner'},
-        {link: ['/runners', {race: this.selectedRaceId}], icon: 'runner', title: 'Runners'},
-        {link: ['/teams', {race: this.selectedRaceId}], icon: 'team', title: 'Teams'},
-        {link: ['/race', {race: this.selectedRaceId}], icon: 'race', title: 'Race setup'},
-        {link: ['/starttime', {race: this.selectedRaceId}], icon: 'time', title: 'Start times'},
-        {link: ['/listings', {race: this.selectedRaceId}], icon: 'listing', title: 'Listings'},
-        {link: ['/statistics', {race: this.selectedRaceId}], icon: 'statistics', title: 'Statistics'},
+        {link: ['/runners'], icon: 'runner', title: 'Runners'},
+        {link: ['/teams'], icon: 'team', title: 'Teams'},
+        {link: ['/race'], icon: 'race', title: 'Race setup'},
+        {link: ['/starttime'], icon: 'time', title: 'Start times'},
+        {link: ['/listings'], icon: 'listing', title: 'Listings'},
+        {link: ['/statistics'], icon: 'statistics', title: 'Statistics'},
         {link: '/admin', icon: 'admin', title: 'Admin'},
     ];
     constructor(private racesService: RacesService) { }
     ngOnInit() {
-        this.racesService.races.subscribe(state => this.selectedRaceId = state.selectedRaceId);
+        this.racesService.races.subscribe(state => this._selectedRaceId = state.selectedRaceId);
+    }
+    get selectedRaceId(): number {
+        return this._selectedRaceId;
+    }
+    getTargetLink(index: number) {
+        const link = this.targets[index].link;
+        if (typeof(link) === 'string') {
+            return link;
+        } else {
+            return [link[0], {race: this.selectedRaceId}];
+        }
     }
 }

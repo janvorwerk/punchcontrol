@@ -1,13 +1,13 @@
 <nav>
-    <ng-container *ngFor="let action of top; last as isLast; index as i">
+    <ng-container *ngFor="let target of targets; last as isLast; index as i">
         <div *ngIf="isLast"></div>
         <app-icon #icon
-            [icon]="action.icon"
-            [routerLink]="action.link"
-            title="{{action.title}}"
+            [icon]="target.icon"
+            [routerLink]="getTargetLink(i)"
+            title="{{target.title}}"
             routerLinkActive
             class="icon"
-            [attr.punch-icon]="icon.state(action.link)"
+            [attr.punch-icon]="icon.state(target.link)"
             ></app-icon>
         </ng-container>
     </nav>
