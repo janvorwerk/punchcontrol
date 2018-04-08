@@ -1,4 +1,21 @@
 <p>
-    Configuration for race {{raceId}}
+    This page is a prototype
 </p>
-<app-file-select label="Drop registration file here" (select)="uploadRegistration($event)"></app-file-select>
+<section>
+    <legend>Courses</legend>
+    <div class="help">Configure the race courses</div>
+</section>
+<section>
+    <legend>Categories</legend>
+    <div class="help">Configure the race categories</div>
+</section>
+<section>
+    <legend>Distribution</legend>
+    <div class="help">Configure which categories run by default on which courses, where they are not allowed to run, how they are ranked etc...</div>
+</section>
+<section>
+    <legend>Runners import</legend>
+    <div class="help">Import runners</div>
+    <app-file-select label="Drop registration file here" (select)="uploadRegistration($event)"></app-file-select>
+</section>
+
