@@ -1,9 +1,44 @@
 [punch-body] {
     background-color: $primaryDark;
 }
+
 app-current-user {
     color: $textOnPrimary;
 }
+
 // [punch-main] {
 //     background-color: $mainBackround;
 // }
+select {
+    background-color: $primaryLight;
+    color: $textOnPrimary;
+    padding: 4px;
+}
+
+section {
+    border-color: transparentize($primaryDark, .8);
+}
+
+button {
+    background-color: $primaryLight;
+    color: $textOnPrimary;
+    padding: 5px;
+    border-radius: 3px;
+    border-style: none;
+    &:not(:disabled):hover {
+        background-color: $primary;
+    }
+    &:disabled {
+        filter: grayscale(50%) blur(1px);
+    }
+}
+
+.help {
+    font-size: .8em;
+    filter: opacity(.8);
+}
+
+input[type=radio],
+input[type=checkbox] {
+    margin-right: .5rem;
+}

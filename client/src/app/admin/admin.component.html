@@ -1,6 +1,92 @@
 <p>
-  This is the administration panel
+    This page is for prototyping
 </p>
-<select [(ngModel)]="selectedTheme" (ngModelChange)="onThemeChange()">
-    <option *ngFor="let theme of allThemes" [ngValue]="theme">{{theme}}</option>
-</select>
+<section>
+    <legend>Data source</legend>
+    <div class="help">You may connect to a remote Punchcontrol application using a simple web browser but you need this app if you need to
+        perform chips readout.</div>
+    <span>Choose the data source</span>
+    <ul>
+        <li class="list-item">
+            <input type="radio" name="datasource" id="db">Local database file<br>
+            <button (click)="openDatabase()">Open Database</button>
+        </li>
+        <li class="list-item">
+            <input type="radio" name="datasource" id="remote">Remote Punchcontrol application
+        </li>
+    </ul>
+    <div *ngIf="adminService.openDatabaseError" class="error">{{adminService.openDatabaseError}}</div>
+</section>
+<section>
+    <legend>Races</legend>
+    <div class="help">Punchcontrol manages several races simultaneously. You can add/suppress races here.</div>
+    <ul>
+        <li *ngFor="let r of allRaces" class="list-item">
+            <input type="checkbox">{{r.name}}{{r.startMode}}{{r.form}}
+        </li>
+    </ul>
+    <div class="button-bar">
+        <button>Add race</button>
+        <button>Suppress selected races</button>
+    </div>
+</section>
+<section>
+    <legend>Chip readers</legend>
+    <div class="help">Configure the chip readers here</div>
+</section>
+<section>
+    <legend>Printers</legend>
+    <div class="help">Configure the ticket printers here</div>
+</section>
+<section>
+    <legend>Runners database</legend>
+    <div class="help">Import a list of known runners from a federal database</div>
+    <div class="button-bar">
+            <button>Import from FFCO website</button>
+            <button>Upload file...</button>
+    </div>
+</section>
+
+<section>
+    <legend>Theme</legend>
+    <span>Choose the application colors theme:</span>
+    <select [(ngModel)]="selectedTheme" (ngModelChange)="onThemeChange()">
+        <option *ngFor="let theme of allThemes" [ngValue]="theme">{{theme}}</option>
+    </select>
+</section>
+<section>
+    <legend>Access on local network</legend>
+    <div class="help">You can allow other users to work on these races. They will access Punchcontrol through a web browser or another Punchcontrol
+        application.
+    </div>
+    <div class="help">
+        Choose the IP port on which the clients can connect. They will have to open the web browser on following address:
+        <pre>http://192.168.0.3:3000</pre>
+    </div>
+    <div>
+        <span>Port: </span>
+        <input type="text" size="5" placeholder="3000" disabled>
+    </div>
+    <div class="button-bar">
+        <button disabled>Enable remote access</button>
+        <button>Disable remote access</button>
+    </div>
+    <legend>Remote users management</legend>
+    <ul>
+        <li *ngFor="let u of ['jan', 'juju']" class="list-item">
+            <input type="checkbox">
+            <span class="username">{{u}}</span>
+            <select>
+                <option>Registration</option>
+                <option>Chip reader</option>
+                <option>Referee</option>
+                <option>Full access</option>
+            </select>
+            <button>Set password</button>
+        </li>
+    </ul>
+    <div class="button-bar">
+        <button>Add user</button>
+        <button>Suppress selected users</button>
+    </div>
+</section>

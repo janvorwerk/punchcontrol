@@ -3,6 +3,9 @@ import { LOGGING } from '../util/logging';
 import { ThemeService, Theme } from '../lib/theme.service';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { RacesService } from '../data/races.service';
+import { RaceDto } from '@punchcontrol/shared/race-dto';
+import { AdminService } from './admin.service';
 
 @Component({
     selector: 'app-admin',
@@ -12,11 +15,13 @@ import { Subscription } from 'rxjs/Subscription';
 export class AdminComponent implements OnInit, OnDestroy {
     selectedTheme: Theme;
     allThemes: Theme[];
+    allRaces: RaceDto[];
 
     private subs: Subscription[] = [];
-    constructor(private themeService: ThemeService) {
+    constructor(private themeService: ThemeService, private racesService: RacesService, public adminService: AdminService) {
         this.subs.push(themeService.theme.subscribe(theme => this.selectedTheme = theme));
         this.allThemes = themeService.themes;
+        this.subs.push(racesService.races.map(r => r.races).subscribe(races => this.allRaces = races));
     }
     ngOnInit() {
     }
@@ -26,5 +31,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     onThemeChange() {
         this.themeService.setTheme(this.selectedTheme);
     }
-
+    openDatabase() {
+        this.adminService.openDatabase();
+    }
 }

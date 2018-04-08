@@ -19,8 +19,4 @@ export class RegisterComponent implements OnInit {
     onFilesSelected(files: File[]) {
         this.registerService.upload(files);
     }
-
-    openDatabase() {
-        this.registerService.openDatabase();
-    }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { RacesService } from '../data/races.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'app-race',
@@ -9,12 +10,16 @@ import { RacesService } from '../data/races.service';
 })
 export class RaceComponent implements OnInit {
 
-    raceId: Observable<number>;
+    raceId: number;
+    private subs: Subscription[] = [];
 
     constructor(private raceService: RacesService) {
-        this.raceId = this.raceService.races.map(r => r.selectedRaceId);
+        this.subs.push(this.raceService.races.map(r => r.selectedRaceId).subscribe(id => this.raceId = id));
     }
     ngOnInit() {
     }
 
+    uploadRegistration(files: File[]) {
+        this.raceService.upload(this.raceId, files);
+    }
 }

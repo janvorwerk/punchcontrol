@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivationStart, Router } from '@angular/router';
 import { RaceDto } from '@punchcontrol/shared/race-dto';
@@ -28,7 +29,7 @@ export class RacesService {
     private _selectedRaceId = new BehaviorSubject<number>(-1);
     private _racesTabsEnabled = new BehaviorSubject<boolean>(true);
 
-    constructor(private router: Router) {
+    constructor(private router: Router, private http: HttpClient) {
         Observable
             .of(FAKE) // fake HTTP call
             .delay(1000)
@@ -76,5 +77,17 @@ export class RacesService {
             .subscribe(name => {
                 document.title = !name ? `punchcontrol` : `${name} - punchcontrol`;
             });
+    }
+
+
+    upload(raceId: number, files: File[]): void {
+        for (let i = 0; i < files.length; i++) {
+            LOGGER.infoc(() => `File ${i}: '${files[i].name}' (${files[i].size} bytes)`);
+            this.http.post(`/api/db/races/${raceId}/registration`, files[i]).subscribe((r) => {
+                LOGGER.infoc(() => `File '${files[i].name}' uploaded`);
+            }, (err) => {
+                LOGGER.error(`Could not upload '${files[i].name}' ${err}`);
+            });
+        }
     }
 }

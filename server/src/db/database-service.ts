@@ -15,7 +15,7 @@ enum BackendDatabase {
     SQLITE, POSTGRES
 }
 
-const BACKEND = BackendDatabase.SQLITE; // edit if needed
+const BACKEND = BackendDatabase.SQLITE; // edit if neede
 
 const COMMON = {
     synchronize: true,

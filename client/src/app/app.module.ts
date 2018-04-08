@@ -29,6 +29,7 @@ import { CurrentUserComponent } from './lib/current-user/current-user.component'
 import { HelpComponent } from './lib/help/help.component';
 import { RacesService } from './data/races.service';
 import { ThemeService } from './lib/theme.service';
+import { AdminService } from './admin/admin.service';
 
 const appRoutes: Routes = [
     { path: 'register', component: RegisterComponent },
@@ -79,7 +80,7 @@ const appRoutes: Routes = [
         FormsModule,
         HttpClientModule
     ],
-    providers: [TeamsService, WebSocketService, RacesService, ThemeService],
+    providers: [TeamsService, WebSocketService, RacesService, ThemeService, AdminService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }
