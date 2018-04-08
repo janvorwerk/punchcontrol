@@ -14,7 +14,7 @@ import { ListingsComponent } from './listings/listings.component';
 import { RaceComponent } from './race/race.component';
 import { RegisterComponent } from './register/register.component';
 import { RunnersComponent } from './runners/runners.component';
-import { SampleService } from './sample.service';
+import { TeamsService } from './teams/teams.service';
 import { StarttimeComponent } from './starttime/starttime.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { TeamsComponent } from './teams/teams.component';
@@ -79,7 +79,7 @@ const appRoutes: Routes = [
         FormsModule,
         HttpClientModule
     ],
-    providers: [SampleService, WebSocketService, RacesService, ThemeService],
+    providers: [TeamsService, WebSocketService, RacesService, ThemeService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

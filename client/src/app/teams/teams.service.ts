@@ -4,28 +4,19 @@ import { PersonDto } from '@punchcontrol/shared/person-dto';
 import { Observable } from 'rxjs/Observable';
 import { TeamMemberDto } from '@punchcontrol/shared/team-member-dto';
 import { TableData } from '@punchcontrol/shared/table-data';
-import { PatchDto } from '../../../shared/dist/patching';
-import { LOGGING } from './util/logging';
+import { PatchDto } from '../../../../shared/dist/patching';
+import { LOGGING } from '../util/logging';
 
 const LOGGER = LOGGING.getLogger('sample.service');
 
 @Injectable()
-export class SampleService {
-    private _data: Observable<PersonDto>;
-
-    private _tmData: Observable<TableData>;
+export class TeamsService {
 
     constructor(private http: HttpClient) {
-        this._data = this.http.get<PersonDto>('/api/auth/whoami');
-        this._tmData = this.http.get<TableData>('/api/db/teammembers');
     }
 
-    get data(): Observable<PersonDto> {
-        return this._data;
-    }
-
-    get teamMembers(): Observable<TableData> {
-        return this._tmData;
+    getTeamMembers(raceId: number): Observable<TableData> {
+        return this.http.get<TableData>('/api/db/teammembers'); // FIXME add race ID in URL
     }
 
     patch(patches: PatchDto[]): Observable<any> {
