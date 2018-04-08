@@ -8,32 +8,32 @@ import { Request, Response } from 'express';
 import { Service } from 'typedi';
 import { Connection } from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
-import { SrvDatabaseService } from '../db/database-service';
+import { DatabaseController } from '../db/database-controller';
 import { Race } from '../entities/race';
 import { TeamMember } from '../entities/team_member';
 import { importFccoRegistrationCsv } from '../util/ffcoparser';
 import { LOGGING } from '../util/logging';
-import { SrvExpressService } from './express-service';
-import { SrvDatabaseApiService } from './generic-db-api';
-import { SrvWebSocketService } from './websocket-service';
+import { ExpressContoller } from './express-controller';
+import { DatabaseApiController } from './generic-db-api';
+import { WebSocketController } from './websocket-controller';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
 @Service()
-export class SrvTeamMembersApiService {
+export class TeamMembersApiController {
 
     constructor(
-        private databaseService: SrvDatabaseService,
-        private expressService: SrvExpressService,
-        private webSocketService: SrvWebSocketService,
-        private databaseApi: SrvDatabaseApiService) { }
+        private databaseCtrl: DatabaseController,
+        private expressCtrl: ExpressContoller,
+        private webSocketCtrl: WebSocketController,
+        private databaseApiCtrl: DatabaseApiController) { }
 
     async initialize() {
-        const app = this.expressService.app;
+        const app = this.expressCtrl.app;
 
         app.get("/api/db/teammembers", async (req: Request, res: Response) => {
-            const cols = this.databaseApi.getColumns('TeamMember'); // TODO: filter with the actually requested columns
-            const data = await this.databaseApi.queryForColumns(this.databaseService.connection, cols);
+            const cols = this.databaseApiCtrl.getColumns('TeamMember'); // TODO: filter with the actually requested columns
+            const data = await this.databaseApiCtrl.queryForColumns(this.databaseCtrl.connection, cols);
             res.status(RestApiStatusCodes.SUCCESS_200_OK).send(data);
         });
     }

@@ -3,14 +3,14 @@ const morgan = require('morgan');
 import * as http from 'http';
 import { Service } from 'typedi';
 import { LOGGING } from '../util/logging';
-import { SrvDatabaseService } from '../db/database-service';
+import { DatabaseController } from '../db/database-controller';
 import { ApiError, RestApiStatusCodes } from '@punchcontrol/shared/api';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
 
 @Service()
-export class SrvExpressService {
+export class ExpressContoller {
 
     server: http.Server;
     app: express.Application;
@@ -18,7 +18,7 @@ export class SrvExpressService {
     host = 'localhost'; // listen only on localhost by default otherwise set 0.0.0.0 or...
 
     constructor(
-        private databaseService: SrvDatabaseService) { }
+        private databaseCtrl: DatabaseController) { }
 
     /**
      * Once configured, start listening to connections
@@ -47,7 +47,7 @@ export class SrvExpressService {
 
         // Check that database is open for all calls to /api/db/....
         const checkDatabaseOpenHandler: express.RequestHandler = (req, res, next) => {
-            const connection = this.databaseService.hasConnection;
+            const connection = this.databaseCtrl.hasConnection;
             if (!connection) {
                 const err: ApiError = { name: 'DatabaseError', message: `No database currently selected` };
                 LOGGER.error(err.message);

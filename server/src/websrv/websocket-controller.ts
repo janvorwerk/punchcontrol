@@ -1,24 +1,24 @@
 import { WebSocketMessage } from '@punchcontrol/shared/websocket-dto';
 import { Service } from 'typedi';
 import * as WebSocket from 'ws';
-import { SrvExpressService } from './express-service';
+import { ExpressContoller } from './express-controller';
 import { LOGGING } from '../util/logging';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
 @Service()
-export class SrvWebSocketService {
+export class WebSocketController {
 
     private wss: WebSocket.Server;
 
-    constructor(private expressService: SrvExpressService) {
+    constructor(private expressCtrl: ExpressContoller) {
     }
 
     /**
      * Initialize the web-socket server
      */
     initialize() {
-        this.wss = new WebSocket.Server({ server: this.expressService.server });
+        this.wss = new WebSocket.Server({ server: this.expressCtrl.server });
 
         this.wss.on('connection', (ws: WebSocket) => {
             ws.on('message', (message: string) => {

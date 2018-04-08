@@ -3,23 +3,23 @@ import * as express from 'express';
 import * as http from 'http';
 import { Container, Service } from 'typedi';
 import { useContainer } from 'typeorm';
-import { SrvExpressService } from './websrv/express-service';
-import { SrvApiConfiguratorService } from './websrv/api-service';
-import { SrvWebSocketService } from './websrv/websocket-service';
+import { ExpressContoller } from './websrv/express-controller';
+import { ApiConfiguratorController } from './websrv/api-controller';
+import { WebSocketController } from './websrv/websocket-controller';
 import { LOGGING } from './util/logging';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
 @Service()
 export class SrvConfigureSercice {
-    constructor(private express: SrvExpressService,
-        private webSocket: SrvWebSocketService,
-        private rest: SrvApiConfiguratorService) {
+    constructor(private expressCtrl: ExpressContoller,
+        private webSocketCtrl: WebSocketController,
+        private apiCtrl: ApiConfiguratorController) {
     }
     async initialize(staticPath?: string) {
-        this.express.initialize(staticPath);
-        this.webSocket.initialize();
-        this.rest.initialize();
+        this.expressCtrl.initialize(staticPath);
+        this.webSocketCtrl.initialize();
+        this.apiCtrl.initialize();
     }
 }
 

@@ -5,11 +5,11 @@ import { CellType, ColumnDefinition, TableData } from '@punchcontrol/shared/tabl
 import { Service } from 'typedi';
 import { Connection } from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
-import { SrvDatabaseService } from '../db/database-service';
+import { DatabaseController } from '../db/database-controller';
 import { TeamMember } from '../entities/team_member';
 import { LOGGING } from '../util/logging';
-import { SrvExpressService } from './express-service';
-import { SrvWebSocketService } from './websocket-service';
+import { ExpressContoller } from './express-controller';
+import { WebSocketController } from './websocket-controller';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -22,20 +22,20 @@ interface QueryColumn {
 }
 
 @Service()
-export class SrvDatabaseApiService {
+export class DatabaseApiController {
 
     constructor(
-        private databaseService: SrvDatabaseService,
-        private expressService: SrvExpressService,
-        private webSocketService: SrvWebSocketService) { }
+        private databaseCtrl: DatabaseController,
+        private expressCtrl: ExpressContoller,
+        private webSocketCtrl: WebSocketController) { }
 
     async initialize() {
-        const app = this.expressService.app;
+        const app = this.expressCtrl.app;
 
         app.patch("/api/db/patch", async (req, res) => {
             try {
                 const patches: PatchDto[] = req.body;
-                const err = await this.databaseService.connection.transaction(async em => {
+                const err = await this.databaseCtrl.connection.transaction(async em => {
                     for (const p of patches) {
                         const match = p.patchEl.match(PATCH_EL_RE.re);
                         if (!match) {
@@ -62,7 +62,7 @@ export class SrvDatabaseApiService {
                 if (err) {
                     res.status(RestApiStatusCodes.CLIENT_409_CONFLICT).send(err);
                 } else {
-                    this.webSocketService.broadcast({ path: '/data/update', body: patches })
+                    this.webSocketCtrl.broadcast({ path: '/data/update', body: patches })
                     res.status(RestApiStatusCodes.SUCCESS_204_NO_CONTENT).send();
                 }
             } catch (e) {

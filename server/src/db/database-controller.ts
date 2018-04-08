@@ -51,7 +51,7 @@ async function openPostgresDatabase() {
 }
 
 @Service()
-export class SrvDatabaseService {
+export class DatabaseController {
 
     private _connection = new BehaviorSubject<Connection|null>(null);
 

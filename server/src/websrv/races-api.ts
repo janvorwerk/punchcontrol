@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { Service } from 'typedi';
-import { SrvDatabaseService } from '../db/database-service';
+import { DatabaseController } from '../db/database-controller';
 import { Race } from '../entities/race';
-import { SrvExpressService } from './express-service';
+import { ExpressContoller } from './express-controller';
 import { importFccoRegistrationCsv } from '../util/ffcoparser';
-import { SrvWebSocketService } from './websocket-service';
+import { WebSocketController } from './websocket-controller';
 import { LOGGING } from '../util/logging';
 import { ApiError, RestApiStatusCodes } from '@punchcontrol/shared/api';
 import { readRequest } from '../util/http-util';
@@ -12,22 +12,22 @@ import { readRequest } from '../util/http-util';
 const LOGGER = LOGGING.getLogger(__filename);
 
 @Service()
-export class SrvRacesApiService {
+export class RacesApiController {
 
     constructor(
-        private databaseService: SrvDatabaseService,
-        private expressService: SrvExpressService,
-        private webSocketService: SrvWebSocketService) { }
+        private databaseCtrl: DatabaseController,
+        private expressCtrl: ExpressContoller,
+        private webSocketCtrl: WebSocketController) { }
 
     async initialize() {
-        const app = this.expressService.app;
+        const app = this.expressCtrl.app;
 
         app.post('/api/db/races/:raceId/registration', async (req, res) => {
             // FIXME: check the Content-Type to see if we upload a file or create a single registration
             try {
                 req.setEncoding('latin1');
                 const content = await readRequest(req);
-                const importedRunnersCount = await importFccoRegistrationCsv(this.databaseService.connection, content);
+                const importedRunnersCount = await importFccoRegistrationCsv(this.databaseCtrl.connection, content);
                 LOGGER.info(`Imported ${importedRunnersCount} runners OK`);
                 res.status(RestApiStatusCodes.SUCCESS_200_OK).send({ importedRunnersCount });
             } catch (e) {
@@ -38,7 +38,7 @@ export class SrvRacesApiService {
         });
 
         app.get("/api/db/races", async (req: Request, res: Response) => {
-            const races = await this.databaseService.connection.getRepository(Race).find();
+            const races = await this.databaseCtrl.connection.getRepository(Race).find();
             res.status(RestApiStatusCodes.SUCCESS_200_OK).send(races);
         });
 
