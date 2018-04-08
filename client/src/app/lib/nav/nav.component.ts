@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { RacesService } from '../../data/races.service';
+import { RacesService } from '../../races.service';
 
 @Component({
     selector: 'app-nav',

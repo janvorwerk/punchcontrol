@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { RacesService } from '../data/races.service';
+import { RacesService } from '../races.service';
 
 import { TeamsService } from '../teams/teams.service';
 import { TableData } from '@punchcontrol/shared/table-data';

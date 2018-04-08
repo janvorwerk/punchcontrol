@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { RacesService } from '../data/races.service';
+import { RacesService } from '../races.service';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({

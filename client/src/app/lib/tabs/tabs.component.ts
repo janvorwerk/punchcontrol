@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { RacesService } from '../../data/races.service';
+import { RacesService } from '../../races.service';
 import { Subscription } from 'rxjs/Subscription';
 import { RaceDto } from '@punchcontrol/shared/race-dto';
 import { LOGGING } from '../../util/logging';

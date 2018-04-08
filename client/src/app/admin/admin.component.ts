@@ -3,7 +3,7 @@ import { LOGGING } from '../util/logging';
 import { ThemeService, Theme } from '../lib/theme.service';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { RacesService } from '../data/races.service';
+import { RacesService } from '../races.service';
 import { RaceDto } from '@punchcontrol/shared/race-dto';
 import { AdminService } from './admin.service';
 

@@ -27,7 +27,7 @@ import { TabsComponent } from './lib/tabs/tabs.component';
 import { SearchComponent } from './search/search.component';
 import { CurrentUserComponent } from './lib/current-user/current-user.component';
 import { HelpComponent } from './lib/help/help.component';
-import { RacesService } from './data/races.service';
+import { RacesService } from './races.service';
 import { ThemeService } from './lib/theme.service';
 import { AdminService } from './admin/admin.service';
 

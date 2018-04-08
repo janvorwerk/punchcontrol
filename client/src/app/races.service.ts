@@ -12,7 +12,7 @@ import 'rxjs/add/operator/shareReplay';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { LOGGING } from '../util/logging';
+import { LOGGING } from './util/logging';
 
 const LOGGER = LOGGING.getLogger('RacesService');
 
