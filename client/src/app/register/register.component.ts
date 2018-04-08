@@ -16,7 +16,4 @@ export class RegisterComponent implements OnInit {
 
     ngOnInit() {
     }
-    onFilesSelected(files: File[]) {
-        this.registerService.upload(files);
-    }
 }
