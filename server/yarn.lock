@@ -33,6 +33,10 @@
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
 
+"@types/js-yaml@^3.11.1":
+  version "3.11.1"
+  resolved "https://registry.yarnpkg.com/@types/js-yaml/-/js-yaml-3.11.1.tgz#ac5bab26be5f9c6f74b6b23420f2cfa5a7a6ba40"
+
 "@types/mime@*":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-2.0.0.tgz#5a7306e367c539b9f6543499de8dd519fac37a8b"

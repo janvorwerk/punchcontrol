@@ -14,7 +14,7 @@ let mainWindow;
 function createWindow() {
     const server = require('@punchcontrol/server');
 
-    const LOGGING = server.initLogs('/tmp'); // FIXME
+    const LOGGING = server.initLogs();
     const LOGGER = LOGGING.getLogger(__filename);
 
     process.on('unhandledRejection', (reason, p) => {
