@@ -3,7 +3,7 @@ const morgan = require('morgan');
 import * as http from 'http';
 import { Service } from 'typedi';
 import { LOGGING } from '../util/logging';
-import { DatabaseController } from '../db/database-controller';
+import { DatabaseController } from '../db/database.controller';
 import { ApiError, RestApiStatusCodes } from '@punchcontrol/shared/api';
 
 const LOGGER = LOGGING.getLogger(__filename);

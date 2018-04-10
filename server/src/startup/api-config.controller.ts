@@ -1,12 +1,12 @@
 import { Service } from 'typedi';
-import { DatabaseController } from '../db/database-controller';
+import { DatabaseController } from '../db/database.controller';
 import { LOGGING } from '../util/logging';
-import { AdminApiController } from './admin-api';
-import { ExpressContoller } from './express-controller';
-import { DatabaseApiController } from './generic-db-api';
-import { RacesApiController } from './races-api';
-import { TeamMembersApiController } from './team-members-api';
-import { WebSocketController } from './websocket-controller';
+import { AdminApi } from '../rest/admin.api';
+import { ExpressContoller } from './express.controller';
+import { GenericApi } from '../rest/generic.api';
+import { RaceApi } from '../rest/races.api';
+import { TeamApi } from '../rest/team.api';
+import { WebSocketController } from './websocket.controller';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -14,16 +14,16 @@ const LOGGER = LOGGING.getLogger(__filename);
  * This is the entry point of the API configuration
  */
 @Service()
-export class ApiConfiguratorController {
+export class ApiConfigController {
 
     constructor(
         private databaseCtrl: DatabaseController,
         private expressCtrl: ExpressContoller,
         private webSocketCtrl: WebSocketController,
-        private teamMembersApiCtrl: TeamMembersApiController,
-        private racesApiCtrl: RacesApiController,
-        private adminApiCtrl: AdminApiController,
-        private databaseApiCtrl: DatabaseApiController) {
+        private teamMembersApiCtrl: TeamApi,
+        private racesApiCtrl: RaceApi,
+        private adminApiCtrl: AdminApi,
+        private databaseApiCtrl: GenericApi) {
 
     }
 

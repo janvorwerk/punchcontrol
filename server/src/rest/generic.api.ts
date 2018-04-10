@@ -5,11 +5,11 @@ import { CellType, ColumnDefinition, TableData } from '@punchcontrol/shared/tabl
 import { Service } from 'typedi';
 import { Connection } from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
-import { DatabaseController } from '../db/database-controller';
+import { DatabaseController } from '../db/database.controller';
 import { TeamMember } from '../entities/team_member';
 import { LOGGING } from '../util/logging';
-import { ExpressContoller } from './express-controller';
-import { WebSocketController } from './websocket-controller';
+import { ExpressContoller } from '../startup/express.controller';
+import { WebSocketController } from '../startup/websocket.controller';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -22,7 +22,7 @@ interface QueryColumn {
 }
 
 @Service()
-export class DatabaseApiController {
+export class GenericApi {
 
     constructor(
         private databaseCtrl: DatabaseController,

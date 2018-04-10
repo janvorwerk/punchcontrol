@@ -1,8 +1,8 @@
 import { safeDump, safeLoad } from 'js-yaml';
-import { async } from './util/async';
+import { async } from '../util/async';
 import { Service } from 'typedi';
 import { join as pathJoin } from 'path';
-import { LOGGING } from './util/logging';
+import { LOGGING } from '../util/logging';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -22,7 +22,7 @@ const DEFAULT_SETTINGS: AppSettings = {
 }
 
 @Service()
-export class SettingsManager implements AppSettings {
+export class SettingsController implements AppSettings {
     private settings: AppSettings;
 
     private appFolder: string;

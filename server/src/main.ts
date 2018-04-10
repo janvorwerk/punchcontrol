@@ -29,8 +29,8 @@ export function initLogs() {
  * @param staticPath where the static web resources are located
  */
 export async function main(staticPath: string) {
-    const configure = require('./configure'); // do not import prior to logs init!
-    configure.startup(APP_FOLDER, staticPath);
+    const startupCtrl = require('./startup/startup.controller'); // do not import prior to logs init!
+    startupCtrl.startup(APP_FOLDER, staticPath);
 }
 
 // Check if this is the main module (we are not started from Electron)

@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { Service } from 'typedi';
-import { DatabaseController } from '../db/database-controller';
+import { DatabaseController } from '../db/database.controller';
 import { Race } from '../entities/race';
-import { ExpressContoller } from './express-controller';
+import { ExpressContoller } from '../startup/express.controller';
 import { importFccoRegistrationCsv } from '../util/ffcoparser';
-import { WebSocketController } from './websocket-controller';
+import { WebSocketController } from '../startup/websocket.controller';
 import { LOGGING } from '../util/logging';
 import { ApiError, RestApiStatusCodes } from '@punchcontrol/shared/api';
 import { readRequest } from '../util/http-util';
@@ -12,7 +12,7 @@ import { readRequest } from '../util/http-util';
 const LOGGER = LOGGING.getLogger(__filename);
 
 @Service()
-export class RacesApiController {
+export class RaceApi {
 
     constructor(
         private databaseCtrl: DatabaseController,

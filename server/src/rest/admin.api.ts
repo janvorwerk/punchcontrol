@@ -7,15 +7,15 @@ import { Request, Response } from 'express';
 import { Service } from 'typedi';
 import { Connection } from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
-import { DatabaseController } from '../db/database-controller';
+import { DatabaseController } from '../db/database.controller';
 import { Race } from '../entities/race';
 import { TeamMember } from '../entities/team_member';
-import { ExpressContoller } from './express-controller';
+import { ExpressContoller } from '../startup/express.controller';
 import { importFccoRegistrationCsv } from '../util/ffcoparser';
-import { WebSocketController } from './websocket-controller';
+import { WebSocketController } from '../startup/websocket.controller';
 import { LOGGING } from '../util/logging';
 import { ApiError, RestApiStatusCodes } from '@punchcontrol/shared/api';
-import { SettingsManager } from '../settings.ctrl';
+import { SettingsController } from '../startup/settings.controller';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -25,13 +25,13 @@ const LOGGER = LOGGING.getLogger(__filename);
  * etc...
  */
 @Service()
-export class AdminApiController {
+export class AdminApi {
 
     constructor(
         private databaseCtrl: DatabaseController,
         private expressCtrl: ExpressContoller,
         private webSocketCtrl: WebSocketController,
-        private settingsMgr: SettingsManager) { }
+        private settingsMgr: SettingsController) { }
 
     async initialize() {
         const app = this.expressCtrl.app;

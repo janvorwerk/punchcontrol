@@ -8,25 +8,25 @@ import { Request, Response } from 'express';
 import { Service } from 'typedi';
 import { Connection } from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
-import { DatabaseController } from '../db/database-controller';
+import { DatabaseController } from '../db/database.controller';
 import { Race } from '../entities/race';
 import { TeamMember } from '../entities/team_member';
 import { importFccoRegistrationCsv } from '../util/ffcoparser';
 import { LOGGING } from '../util/logging';
-import { ExpressContoller } from './express-controller';
-import { DatabaseApiController } from './generic-db-api';
-import { WebSocketController } from './websocket-controller';
+import { ExpressContoller } from '../startup/express.controller';
+import { GenericApi } from './generic.api';
+import { WebSocketController } from '../startup/websocket.controller';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
 @Service()
-export class TeamMembersApiController {
+export class TeamApi {
 
     constructor(
         private databaseCtrl: DatabaseController,
         private expressCtrl: ExpressContoller,
         private webSocketCtrl: WebSocketController,
-        private databaseApiCtrl: DatabaseApiController) { }
+        private databaseApiCtrl: GenericApi) { }
 
     async initialize() {
         const app = this.expressCtrl.app;
