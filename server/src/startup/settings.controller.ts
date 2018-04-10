@@ -3,7 +3,7 @@ import { async } from '../util/async';
 import { Service } from 'typedi';
 import { join as pathJoin } from 'path';
 import { LOGGING } from '../util/logging';
-import { AppSettings } from '@punchcontrol/shared/app-settings';
+import { AppSettings, AppMode } from '@punchcontrol/shared/app-settings';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
