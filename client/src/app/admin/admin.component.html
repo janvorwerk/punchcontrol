@@ -8,7 +8,7 @@
     <span>Choose the data source</span>
     <ul>
         <li class="list-item">
-            <input type="radio" name="datasource" id="db">Local database file<br>
+            <input type="radio" name="datasource" id="db">Local database file: {{settings?.recents && settings.recents[0] || ''}}<br>
             <button (click)="openDatabase()">Open Database</button>
         </li>
         <li class="list-item">
@@ -61,11 +61,11 @@
     </div>
     <div class="help">
         Choose the IP port on which the clients can connect. They will have to open the web browser on following address:
-        <pre>http://192.168.0.3:3000</pre>
+        <pre>http://192.168.0.3:{{settings?.port}}</pre>
     </div>
     <div>
         <span>Port: </span>
-        <input type="text" size="5" placeholder="3000" disabled>
+        <input type="text" size="5" placeholder="{{settings?.port}}" disabled>
     </div>
     <div class="button-bar">
         <button disabled>Enable remote access</button>

@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { LOGGING } from '../util/logging';
-import { ThemeService, Theme } from '../lib/theme.service';
+import { AppSettings } from '@punchcontrol/shared/app-settings';
+import { RaceDto } from '@punchcontrol/shared/race-dto';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { Theme, ThemeService } from '../lib/theme.service';
 import { RacesService } from '../races.service';
-import { RaceDto } from '@punchcontrol/shared/race-dto';
+import { LOGGING } from '../util/logging';
 import { AdminService } from './admin.service';
 
 @Component({
@@ -13,6 +14,7 @@ import { AdminService } from './admin.service';
     styleUrls: ['./admin.component.scss']
 })
 export class AdminComponent implements OnInit, OnDestroy {
+    settings: AppSettings;
     selectedTheme: Theme;
     allThemes: Theme[];
     allRaces: RaceDto[];
@@ -22,6 +24,7 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.subs.push(themeService.theme.subscribe(theme => this.selectedTheme = theme));
         this.allThemes = themeService.themes;
         this.subs.push(racesService.races.map(r => r.races).subscribe(races => this.allRaces = races));
+        this.subs.push(adminService.readSettings().subscribe(settings => this.settings = settings));
     }
     ngOnInit() {
     }

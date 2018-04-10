@@ -3,22 +3,16 @@ import { async } from '../util/async';
 import { Service } from 'typedi';
 import { join as pathJoin } from 'path';
 import { LOGGING } from '../util/logging';
+import { AppSettings } from '@punchcontrol/shared/app-settings';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
-export type AppMode = 'STANDALONE' | 'MAIN' | 'SECONDARY';
-
-export interface AppSettings {
-    port: number;
-    mode: AppMode;
-    recents: string[];
-    masterUrl: string|null;
-}
 const DEFAULT_SETTINGS: AppSettings = {
     port: 3000,
     mode: 'STANDALONE',
     recents: [],
     masterUrl: null,
+    chipReaders: []
 }
 
 @Service()
@@ -62,6 +56,16 @@ export class SettingsController implements AppSettings {
 
     get masterUrl() { return this.settings.masterUrl }
     set masterUrl(url: string|null){ this.settings.masterUrl = url; this.rec() }
+
+    get chipReaders() { return this.settings.chipReaders }
+    addChipReaders(reader: {port: string, name?: string}) {
+        this.settings.chipReaders.push(reader);
+        this.rec();
+    }
+    removeChipReaders(port: string) {
+        this.settings.chipReaders = this.settings.chipReaders.filter(cr => cr.port !== port);
+        this.rec();
+    }
 
     export(): AppSettings{
         return Object.assign({}, this.settings);
