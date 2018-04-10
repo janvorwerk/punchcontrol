@@ -15,6 +15,7 @@ import { importFccoRegistrationCsv } from '../util/ffcoparser';
 import { WebSocketController } from './websocket-controller';
 import { LOGGING } from '../util/logging';
 import { ApiError, RestApiStatusCodes } from '@punchcontrol/shared/api';
+import { SettingsManager } from '../settings.ctrl';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -29,7 +30,8 @@ export class AdminApiController {
     constructor(
         private databaseCtrl: DatabaseController,
         private expressCtrl: ExpressContoller,
-        private webSocketCtrl: WebSocketController) { }
+        private webSocketCtrl: WebSocketController,
+        private settingsMgr: SettingsManager) { }
 
     async initialize() {
         const app = this.expressCtrl.app;
@@ -43,10 +45,13 @@ export class AdminApiController {
                 res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(err);
             }
         });
-        app.get('/api/auth/whoami', (req, res) => {
-            const person: PersonDto = { firstName: 'Jan', lastName: 'Vorwerk' };
-            res.status(RestApiStatusCodes.SUCCESS_200_OK).send(person);
+        app.get('/api/admin/settings', (req, res) => {
+            const settings = this.settingsMgr.export(); // TODO: filter out useless or sensitive stuff
+            res.status(RestApiStatusCodes.SUCCESS_200_OK).send(settings);
         });
-
+        app.post('/api/admin/settings', (req, res) => {
+            const settings = this.settingsMgr.import(req.body);
+            res.status(RestApiStatusCodes.SUCCESS_204_NO_CONTENT).send();
+        });
     }
 }
