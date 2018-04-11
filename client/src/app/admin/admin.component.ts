@@ -24,7 +24,7 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.subs.push(themeService.theme.subscribe(theme => this.selectedTheme = theme));
         this.allThemes = themeService.themes;
         this.subs.push(racesService.races.map(r => r.races).subscribe(races => this.allRaces = races));
-        this.subs.push(adminService.readSettings().subscribe(settings => this.settings = settings));
+        this.subs.push(adminService.settings.subscribe(settings => this.settings = settings));
     }
     ngOnInit() {
     }

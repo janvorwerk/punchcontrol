@@ -30,6 +30,7 @@ import { HelpComponent } from './lib/help/help.component';
 import { RacesService } from './races.service';
 import { ThemeService } from './lib/theme.service';
 import { AdminService } from './admin/admin.service';
+import { AuthService } from './auth.service';
 
 const appRoutes: Routes = [
     { path: 'register', component: RegisterComponent },
@@ -49,27 +50,27 @@ const appRoutes: Routes = [
 
 @NgModule({
     declarations: [
-        AppComponent,
-        RunnersComponent,
-        Err404Component,
-        IconComponent,
-        RegisterComponent,
-        TeamsComponent,
-        RaceComponent,
-        StarttimeComponent,
-        ListingsComponent,
-        StatisticsComponent,
         AdminComponent,
-        NavComponent,
-        LoremComponent,
-        WelcomeComponent,
-        TableComponent,
-        ScrollComponent,
-        FileSelectComponent,
-        TabsComponent,
-        SearchComponent,
+        AppComponent,
         CurrentUserComponent,
+        Err404Component,
+        FileSelectComponent,
         HelpComponent,
+        IconComponent,
+        ListingsComponent,
+        LoremComponent,
+        NavComponent,
+        RaceComponent,
+        RegisterComponent,
+        RunnersComponent,
+        ScrollComponent,
+        SearchComponent,
+        StarttimeComponent,
+        StatisticsComponent,
+        TableComponent,
+        TabsComponent,
+        TeamsComponent,
+        WelcomeComponent,
     ],
     imports: [
         RouterModule.forRoot(
@@ -80,7 +81,14 @@ const appRoutes: Routes = [
         FormsModule,
         HttpClientModule
     ],
-    providers: [TeamsService, WebSocketService, RacesService, ThemeService, AdminService],
+    providers: [
+        AdminService,
+        AuthService,
+        RacesService,
+        TeamsService,
+        ThemeService,
+        WebSocketService,
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

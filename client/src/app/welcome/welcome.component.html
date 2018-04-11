@@ -1,3 +1,21 @@
-<p>
-  Welcome to punchcontrol
-</p>
+<h1>
+    Welcome to punchcontrol!
+</h1>
+<ng-container *ngIf="isLocal">
+    <ng-container *ngIf="recentDatabases?.length">
+        <h2>Recent database files</h2>
+        <ul>
+            <li *ngFor="let r of recentDatabases">{{r}}</li>
+        </ul>
+    </ng-container>
+    <ng-container *ngIf="recentMasters?.length">
+        <h2>Recent remote application connections</h2>
+        <ul>
+            <li *ngFor="let r of recentMasters">{{r}}</li>
+        </ul>
+    </ng-container>
+</ng-container>
+
+<h2>Online resources</h2>
+
+Visit <a href="http://www.punchcontrol.com">www.punchcontrol.com</a>

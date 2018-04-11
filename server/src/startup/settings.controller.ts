@@ -10,13 +10,13 @@ const LOGGER = LOGGING.getLogger(__filename);
 const DEFAULT_SETTINGS: AppSettings = {
     port: 3000,
     mode: 'STANDALONE',
-    recents: [],
-    masterUrl: null,
+    recentDatabases: [],
+    recentMasters: [],
     chipReaders: []
 }
 
 @Service()
-export class SettingsController implements AppSettings {
+export class SettingsController {
     private settings: AppSettings;
 
     private appFolder: string;
@@ -34,19 +34,16 @@ export class SettingsController implements AppSettings {
         } catch (e) {
             LOGGER.warn(`Could not read settings (using default settings): ${e}`);
         }
-        if (this.settings.recents.length === 0) {
+        if (this.settings.recentDatabases.length === 0) {
             this.addRecent(pathJoin(this.appFolder, 'default.punch'));
         }
         this.rec(); // we want the default values to be in the file for self-documenting conf
     }
-    get port() { return this.settings.port }
-    set port(port: number) { this.settings.port = port; this.rec() }
-
-    get recents() { return this.settings.recents }
+    // get recentDatabases() { return this.settings.recentDatabases }
     addRecent(path: string) {
-        const count = this.recents.unshift(path);
+        const count = this.settings.recentDatabases.unshift(path);
         if (count > 6) {
-            this.recents.pop();
+            this.settings.recentDatabases.pop();
         }
         this.rec();
     }
@@ -54,9 +51,14 @@ export class SettingsController implements AppSettings {
     get mode() { return this.settings.mode }
     set mode(mode: AppMode) { this.settings.mode = mode; this.rec() }
 
-    get masterUrl() { return this.settings.masterUrl }
-    set masterUrl(url: string|null){ this.settings.masterUrl = url; this.rec() }
-
+    // get recentMasters() { return this.settings.recentMasters }
+    addMaster(path: string) {
+        const count = this.settings.recentDatabases.unshift(path);
+        if (count > 6) {
+            this.settings.recentDatabases.pop();
+        }
+        this.rec();
+    }
     get chipReaders() { return this.settings.chipReaders }
     addChipReaders(reader: {port: string, name?: string}) {
         this.settings.chipReaders.push(reader);
