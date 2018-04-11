@@ -5,12 +5,14 @@ import { Service } from 'typedi';
 import { LOGGING } from '../util/logging';
 import { DatabaseController } from '../db/database.controller';
 import { ApiError, RestApiStatusCodes } from '@punchcontrol/shared/api';
+import { AuthController } from './auth.controller';
+import { RequestHandler } from 'express';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
 
 @Service()
-export class ExpressContoller {
+export class ExpressController {
 
     server: http.Server;
     app: express.Application;
@@ -18,7 +20,8 @@ export class ExpressContoller {
     host = 'localhost'; // listen only on localhost by default otherwise set 0.0.0.0 or...
 
     constructor(
-        private databaseCtrl: DatabaseController) { }
+        private databaseCtrl: DatabaseController) {
+        }
 
     /**
      * Once configured, start listening to connections

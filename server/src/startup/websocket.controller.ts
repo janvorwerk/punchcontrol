@@ -1,7 +1,7 @@
 import { WebSocketMessage } from '@punchcontrol/shared/websocket-dto';
 import { Service } from 'typedi';
 import * as WebSocket from 'ws';
-import { ExpressContoller } from './express.controller';
+import { ExpressController } from './express.controller';
 import { LOGGING } from '../util/logging';
 
 const LOGGER = LOGGING.getLogger(__filename);
@@ -11,7 +11,7 @@ export class WebSocketController {
 
     private wss: WebSocket.Server;
 
-    constructor(private expressCtrl: ExpressContoller) {
+    constructor(private expressCtrl: ExpressController) {
     }
 
     /**

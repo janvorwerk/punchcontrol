@@ -8,7 +8,7 @@ import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { DatabaseController } from '../db/database.controller';
 import { TeamMember } from '../entities/team_member';
 import { LOGGING } from '../util/logging';
-import { ExpressContoller } from '../startup/express.controller';
+import { ExpressController } from '../startup/express.controller';
 import { WebSocketController } from '../startup/websocket.controller';
 
 const LOGGER = LOGGING.getLogger(__filename);
@@ -26,7 +26,7 @@ export class GenericApi {
 
     constructor(
         private databaseCtrl: DatabaseController,
-        private expressCtrl: ExpressContoller,
+        private expressCtrl: ExpressController,
         private webSocketCtrl: WebSocketController) { }
 
     async initialize() {

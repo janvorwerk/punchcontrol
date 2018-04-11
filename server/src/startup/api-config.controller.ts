@@ -2,7 +2,7 @@ import { Service } from 'typedi';
 import { DatabaseController } from '../db/database.controller';
 import { LOGGING } from '../util/logging';
 import { AdminApi } from '../rest/admin.api';
-import { ExpressContoller } from './express.controller';
+import { ExpressController } from './express.controller';
 import { GenericApi } from '../rest/generic.api';
 import { RaceApi } from '../rest/races.api';
 import { TeamApi } from '../rest/team.api';
@@ -18,7 +18,7 @@ export class ApiConfigController {
 
     constructor(
         private databaseCtrl: DatabaseController,
-        private expressCtrl: ExpressContoller,
+        private expressCtrl: ExpressController,
         private webSocketCtrl: WebSocketController,
         private teamMembersApiCtrl: TeamApi,
         private racesApiCtrl: RaceApi,

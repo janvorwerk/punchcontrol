@@ -6,6 +6,8 @@ const BrowserWindow = electron.BrowserWindow;
 
 const path = require('path');
 const url = require('url');
+const crypto = require('crypto');
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -21,17 +23,28 @@ function createWindow() {
         LOGGER.fatal(() => `Unhandled Rejection at:'${p}: ${reason}`);
     });
 
-    const staticPath = path.join(__dirname, 'web');
-    server.main(staticPath)
-        .then(() => LOGGER.debug(`Server started`))
-        .catch((err) => LOGGER.error(() => `${err}`));
-
-
     // Create the browser window.
-    mainWindow = new BrowserWindow({ width: 800, height: 600 });
+    mainWindow = new BrowserWindow({ width: 1100, height: 700 });
 
-    // and load the web app
-    mainWindow.loadURL('http://localhost:3000');
+    // Compute a random string which will be given to both web client
+    // and server on startup to make sure that the client is really the page
+    // embedded in the Electron App, which grants full admin priviledge.
+    // @ts-ignore
+    const electronSecret = crypto.randomBytes(32).toString('base64');
+    const staticPath = path.join(__dirname, 'web');
+    server.main(staticPath, electronSecret)
+        .then(() => {
+            LOGGER.info(`Server started`);
+            // and load the web app
+            mainWindow.loadURL('http://localhost:3000/electron', {
+                extraHeaders:
+                // TODO, when we support multiple users, this will need rework but it's OK for now
+                'Authorization: Bearer ' + electronSecret
+            });
+        })
+        .catch((err) => {
+            LOGGER.error(() => `${err}`);
+        });
 
     // Open the DevTools.
     mainWindow.webContents.openDevTools()

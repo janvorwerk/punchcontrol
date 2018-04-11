@@ -13,7 +13,7 @@ import { Race } from '../entities/race';
 import { TeamMember } from '../entities/team_member';
 import { importFccoRegistrationCsv } from '../util/ffcoparser';
 import { LOGGING } from '../util/logging';
-import { ExpressContoller } from '../startup/express.controller';
+import { ExpressController } from '../startup/express.controller';
 import { GenericApi } from './generic.api';
 import { WebSocketController } from '../startup/websocket.controller';
 
@@ -24,7 +24,7 @@ export class TeamApi {
 
     constructor(
         private databaseCtrl: DatabaseController,
-        private expressCtrl: ExpressContoller,
+        private expressCtrl: ExpressController,
         private webSocketCtrl: WebSocketController,
         private databaseApiCtrl: GenericApi) { }
 

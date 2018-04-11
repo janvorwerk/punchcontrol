@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { Service } from 'typedi';
 import { DatabaseController } from '../db/database.controller';
 import { Race } from '../entities/race';
-import { ExpressContoller } from '../startup/express.controller';
+import { ExpressController } from '../startup/express.controller';
 import { importFccoRegistrationCsv } from '../util/ffcoparser';
 import { WebSocketController } from '../startup/websocket.controller';
 import { LOGGING } from '../util/logging';
@@ -16,7 +16,7 @@ export class RaceApi {
 
     constructor(
         private databaseCtrl: DatabaseController,
-        private expressCtrl: ExpressContoller,
+        private expressCtrl: ExpressController,
         private webSocketCtrl: WebSocketController) { }
 
     async initialize() {

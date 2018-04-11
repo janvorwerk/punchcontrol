@@ -10,7 +10,7 @@ import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { DatabaseController } from '../db/database.controller';
 import { Race } from '../entities/race';
 import { TeamMember } from '../entities/team_member';
-import { ExpressContoller } from '../startup/express.controller';
+import { ExpressController } from '../startup/express.controller';
 import { importFccoRegistrationCsv } from '../util/ffcoparser';
 import { WebSocketController } from '../startup/websocket.controller';
 import { LOGGING } from '../util/logging';
@@ -29,7 +29,7 @@ export class AdminApi {
 
     constructor(
         private databaseCtrl: DatabaseController,
-        private expressCtrl: ExpressContoller,
+        private expressCtrl: ExpressController,
         private webSocketCtrl: WebSocketController,
         private settingsMgr: SettingsController) { }
 
