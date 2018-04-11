@@ -1,5 +1,5 @@
 syntax: glob
-.hg/
+.git/
 .vscode/
 */node_modules/
 */npm-debug.log
