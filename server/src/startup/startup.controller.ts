@@ -6,7 +6,6 @@ import { join as pathJoin } from 'path';
 import { Container, Service } from 'typedi';
 import { useContainer } from 'typeorm';
 import { LOGGING } from '../util/logging';
-import { ApiConfigController } from './api-config.controller';
 import { ExpressController } from './express.controller';
 import { WebSocketController } from './websocket.controller';
 import { SettingsController } from './settings.controller';
@@ -17,21 +16,15 @@ const LOGGER = LOGGING.getLogger(__filename);
 @Service()
 class StartupController {
     constructor(private expressCtrl: ExpressController,
-        private webSocketCtrl: WebSocketController,
-        private apiCtrl: ApiConfigController,
         private settingsCtrl: SettingsController,
         private authCtrl: AuthController) {
     }
     async initialize(appFolder: string, staticPath: string, secret: string) {
         // Init settings first so that other can use
         await this.settingsCtrl.initialize(appFolder);
-        // Then init express so that express.app is created for others to use
-        await this.expressCtrl.initialize(staticPath);
-
-        // Then init the others
-        await this.authCtrl.initialize(secret);
-        await this.webSocketCtrl.initialize();
-        await this.apiCtrl.initialize();
+        this.authCtrl.initialize(secret);
+        this.expressCtrl.initialize(staticPath);
+        this.expressCtrl.startListening();
     }
 }
 

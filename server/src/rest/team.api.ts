@@ -16,6 +16,7 @@ import { LOGGING } from '../util/logging';
 import { ExpressController } from '../startup/express.controller';
 import { GenericApi } from './generic.api';
 import { WebSocketController } from '../startup/websocket.controller';
+import { Application } from 'express';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -24,13 +25,10 @@ export class TeamApi {
 
     constructor(
         private databaseCtrl: DatabaseController,
-        private expressCtrl: ExpressController,
         private webSocketCtrl: WebSocketController,
         private databaseApiCtrl: GenericApi) { }
 
-    async initialize() {
-        const app = this.expressCtrl.app;
-
+    registerHandlers(app: Application): any {
         app.get("/api/db/teammembers", async (req: Request, res: Response) => {
             const cols = this.databaseApiCtrl.getColumns('TeamMember'); // TODO: filter with the actually requested columns
             const data = await this.databaseApiCtrl.queryForColumns(this.databaseCtrl.connection, cols);

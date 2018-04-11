@@ -1,8 +1,9 @@
 import { WebSocketMessage } from '@punchcontrol/shared/websocket-dto';
 import { Service } from 'typedi';
 import * as WebSocket from 'ws';
-import { ExpressController } from './express.controller';
 import { LOGGING } from '../util/logging';
+import { Application } from 'express';
+import { Server } from 'http';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -11,14 +12,14 @@ export class WebSocketController {
 
     private wss: WebSocket.Server;
 
-    constructor(private expressCtrl: ExpressController) {
+    constructor() {
     }
 
     /**
      * Initialize the web-socket server
      */
-    initialize() {
-        this.wss = new WebSocket.Server({ server: this.expressCtrl.server });
+    initialize(server: Server) {
+        this.wss = new WebSocket.Server({ server: server });
 
         this.wss.on('connection', (ws: WebSocket) => {
             ws.on('message', (message: string) => {

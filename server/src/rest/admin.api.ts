@@ -16,6 +16,7 @@ import { WebSocketController } from '../startup/websocket.controller';
 import { LOGGING } from '../util/logging';
 import { ApiError, RestApiStatusCodes } from '@punchcontrol/shared/api';
 import { SettingsController } from '../startup/settings.controller';
+import { Application } from 'express';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -29,12 +30,10 @@ export class AdminApi {
 
     constructor(
         private databaseCtrl: DatabaseController,
-        private expressCtrl: ExpressController,
         private webSocketCtrl: WebSocketController,
         private settingsMgr: SettingsController) { }
 
-    async initialize() {
-        const app = this.expressCtrl.app;
+    registerHandlers(app: Application): void {
         app.post('/api/admin/database', async (req: Request, res: Response) => {
             try {
                 await this.databaseCtrl.openDatabase();

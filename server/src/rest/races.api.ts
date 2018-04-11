@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, Application } from 'express';
 import { Service } from 'typedi';
 import { DatabaseController } from '../db/database.controller';
 import { Race } from '../entities/race';
@@ -16,12 +16,9 @@ export class RaceApi {
 
     constructor(
         private databaseCtrl: DatabaseController,
-        private expressCtrl: ExpressController,
         private webSocketCtrl: WebSocketController) { }
 
-    async initialize() {
-        const app = this.expressCtrl.app;
-
+    registerHandlers(app: Application): any {
         app.post('/api/db/races/:raceId/registration', async (req, res) => {
             // FIXME: check the Content-Type to see if we upload a file or create a single registration
             try {

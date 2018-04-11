@@ -7,6 +7,12 @@ import { DatabaseController } from '../db/database.controller';
 import { ApiError, RestApiStatusCodes } from '@punchcontrol/shared/api';
 import { AuthController } from './auth.controller';
 import { RequestHandler } from 'express';
+import { join as pathJoin } from 'path';
+import { AdminApi } from '../rest/admin.api';
+import { GenericApi } from '../rest/generic.api';
+import { RaceApi } from '../rest/races.api';
+import { TeamApi } from '../rest/team.api';
+import { WebSocketController } from './websocket.controller';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -20,8 +26,15 @@ export class ExpressController {
     host = 'localhost'; // listen only on localhost by default otherwise set 0.0.0.0 or...
 
     constructor(
-        private databaseCtrl: DatabaseController) {
-        }
+        private databaseCtrl: DatabaseController,
+        private authCtrl: AuthController,
+        private adminApi: AdminApi,
+        private genericApi: GenericApi,
+        private raceApi: RaceApi,
+        private teamApi: TeamApi,
+        private webSocketCtrl: WebSocketController
+    ) {
+    }
 
     /**
      * Once configured, start listening to connections
@@ -35,18 +48,17 @@ export class ExpressController {
      * Initialize the web server
      * @param staticPath where the static resources are located
      */
-    initialize(staticPath?: string): void {
+    initialize(staticPath: string) {
         LOGGER.info(() => `Express server is starting up with static path = ${staticPath}`);
         this.app = express();
+
         this.app.use(express.json());
         // configure all 'access' logging
         this.app.use(morgan(':date[iso] :method :url :status - :remote-addr (:response-time ms)', {
             stream: LOGGING.logStream
         }));
         // serve static files
-        if (staticPath) {
-            this.app.use(express.static(staticPath));
-        }
+        this.app.use(express.static(staticPath));
 
         // Check that database is open for all calls to /api/db/....
         const checkDatabaseOpenHandler: express.RequestHandler = (req, res, next) => {
@@ -61,18 +73,28 @@ export class ExpressController {
         };
         this.app.use('/api/db/', checkDatabaseOpenHandler);
 
-        // Error handling is LAST -- -not sure when this gets called with await/async handlers
-        const clientErrorHandler: express.ErrorRequestHandler = (err, req, res, next) => {
-            LOGGER.error(() => `Unpexpected error in ${req.method} ${req.url}: ${err}`);
-            if (req.xhr) {
-                const e: ApiError = { name: 'InternalError', message: `Unexpected error: ${err}` };
-                res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(e)
+        // Register all routes
+        this.authCtrl.registerHandlers(this.app)
+        this.adminApi.registerHandlers(this.app);
+        this.genericApi.registerHandlers(this.app);
+        this.raceApi.registerHandlers(this.app);
+        this.teamApi.registerHandlers(this.app);
+
+        // filter to respond with root html page for HTML5 push-state URLs
+        this.app.use((req, res, next) => {
+            if (
+                req.url.startsWith('/api') || // API
+                req.url.startsWith('/ws') ||  // WebSocket
+                req.url.includes('.')         // a regular file .css, .svg etc...
+            ) {
+                next(); // let other routes handle
             } else {
-                next(err)
+                res.status(RestApiStatusCodes.SUCCESS_200_OK);
+                res.sendFile(pathJoin(staticPath, 'index.html'), { url: req.url });
             }
-        }
-        this.app.use(clientErrorHandler);
+        });
 
         this.server = http.createServer(this.app);
+        this.webSocketCtrl.initialize(this.server);
     }
 }

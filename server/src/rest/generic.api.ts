@@ -10,6 +10,7 @@ import { TeamMember } from '../entities/team_member';
 import { LOGGING } from '../util/logging';
 import { ExpressController } from '../startup/express.controller';
 import { WebSocketController } from '../startup/websocket.controller';
+import { Application } from 'express';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -26,12 +27,9 @@ export class GenericApi {
 
     constructor(
         private databaseCtrl: DatabaseController,
-        private expressCtrl: ExpressController,
         private webSocketCtrl: WebSocketController) { }
 
-    async initialize() {
-        const app = this.expressCtrl.app;
-
+    registerHandlers(app: Application): void {
         app.patch("/api/db/patch", async (req, res) => {
             try {
                 const patches: PatchDto[] = req.body;
