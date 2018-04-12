@@ -1,16 +1,13 @@
 import { Injectable } from '@angular/core';
 import { WebSocketMessage } from '@punchcontrol/shared/websocket-dto';
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/filter';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import { BasepathService } from './basepath.service';
-import { AuthService } from './auth.service';
+import { interval } from 'rxjs/observable/interval';
+import { merge } from 'rxjs/observable/merge';
+import { filter } from 'rxjs/operators';
 import { LOGGING } from '../../util/logging';
-
-
+import { AuthService } from './auth.service';
+import { BasepathService } from './basepath.service';
 
 const LOGGER = LOGGING.getLogger('websocket.service');
 
@@ -50,9 +47,9 @@ export class WebSocketService {
     constructor(basepathService: BasepathService, authService: AuthService) {
         this.wsUrl = basepathService.buildWebSocketUrl('/ws');
         this.openWebSocket(authService.token);
-        Observable.merge(
-            Observable.interval(KEEP_ALIVE_PERIOD_MS),
-            this.state.filter(s => s.state === WebSocketState.OPEN)
+        merge(
+            interval(KEEP_ALIVE_PERIOD_MS),
+            this.state.pipe(filter(s => s.state === WebSocketState.OPEN))
         ).subscribe(() => {
             this.send({ path: '/protocol/keepalive', body: '' });
         });

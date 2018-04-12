@@ -1,10 +1,9 @@
-import { Component, OnInit, Input, ElementRef, AfterViewInit } from '@angular/core';
-import { ThemeService } from '../../services/theme.service';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/delay';
-import { LOGGING } from '../../../util/logging';
+import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs/Observable';
+import { delay, map } from 'rxjs/operators';
+import { LOGGING } from '../../../util/logging';
+import { ThemeService } from '../../services/theme.service';
 
 const LOGGER = LOGGING.getLogger('IconComponent');
 
@@ -16,7 +15,10 @@ const LOGGER = LOGGING.getLogger('IconComponent');
 export class IconComponent implements OnInit {
     fill: Observable<string>;
     constructor(themeService: ThemeService, private element: ElementRef, private router: Router) {
-        this.fill = themeService.theme.delay(100).map(() => window.getComputedStyle(element.nativeElement.querySelector('svg')).color);
+        this.fill = themeService.theme.pipe(
+            delay(100),
+            map(() => window.getComputedStyle(element.nativeElement.querySelector('svg')).color)
+        );
     }
 
     @Input()

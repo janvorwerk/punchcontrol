@@ -1,16 +1,17 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { RacesService } from '../common/services/races.service';
-
-import { TeamsService } from '../teams/teams.service';
-import { TableData } from '@punchcontrol/shared/table-data';
-import { CellValueChangeEvent } from '../common/components/table/table.component';
-import { LOGGING } from '../util/logging';
-import { Subscription } from 'rxjs/Subscription';
-import { PATCH_EL_RE, PatchDto } from '@punchcontrol/shared/patching';
 import { HttpErrorResponse } from '@angular/common/http';
-import { WebSocketService } from '../common/services/websocket.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { PATCH_EL_RE, PatchDto } from '@punchcontrol/shared/patching';
+import { TableData } from '@punchcontrol/shared/table-data';
 import { WebSocketMessage } from '@punchcontrol/shared/websocket-dto';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import { map } from 'rxjs/operators';
+import { CellValueChangeEvent } from '../common/components/table/table.component';
+import { RacesService } from '../common/services/races.service';
+import { WebSocketService } from '../common/services/websocket.service';
+import { TeamsService } from '../teams/teams.service';
+import { LOGGING } from '../util/logging';
+
 
 const LOGGER = LOGGING.getLogger('ListingsComponent');
 
@@ -30,7 +31,7 @@ export class TeamsComponent implements OnInit, OnDestroy {
         private teamsService: TeamsService,
         private raceService: RacesService) {
 
-        this.raceId = this.raceService.races.map(r => r.selectedRaceId);
+        this.raceId = this.raceService.races.pipe(map(r => r.selectedRaceId));
         this.subs.push(this.raceId.subscribe( r => {
             this.subs.push(this.teamsService.getTeamMembers(r).subscribe(data => this.data = data));
         }));

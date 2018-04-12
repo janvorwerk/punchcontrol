@@ -2,16 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ActivationStart, Router } from '@angular/router';
 import { RaceDto } from '@punchcontrol/shared/race-dto';
-import 'rxjs/add/observable/combineLatest';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/delay';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/shareReplay';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { combineLatest } from 'rxjs/observable/combineLatest';
+import { of } from 'rxjs/observable/of';
+import { delay, distinctUntilChanged, filter, map, shareReplay, tap } from 'rxjs/operators';
 import { LOGGING } from '../../util/logging';
 
 const LOGGER = LOGGING.getLogger('RacesService');
@@ -30,9 +25,10 @@ export class RacesService {
     private _racesTabsEnabled = new BehaviorSubject<boolean>(true);
 
     constructor(private router: Router, private http: HttpClient) {
-        Observable
-            .of(FAKE) // fake HTTP call
-            .delay(1000)
+        of(FAKE) // fake HTTP call
+            .pipe(
+                delay(1000)
+            )
             .subscribe(this._races);
 
         router.events.subscribe(e => {
@@ -46,37 +42,39 @@ export class RacesService {
             }
         });
 
-        this.races = Observable
-            .combineLatest(
+        this.races = combineLatest(
                 this._races,
-                this._selectedRaceId.distinctUntilChanged(),
-                this._racesTabsEnabled.distinctUntilChanged())
+                this._selectedRaceId.pipe(distinctUntilChanged()),
+                this._racesTabsEnabled.pipe(distinctUntilChanged())
+            ).pipe(
             // Transform to object
-            .map(([races, selectedRaceId, enabled]) => ({ races, selectedRaceId, enabled }))
+            map(([races, selectedRaceId, enabled]) => ({ races, selectedRaceId, enabled })),
             // reset to 1st race if selected race is no longer available
-            .map(state => {
+            map(state => {
                 const ids = state.races.map(r => r.id);
                 if (ids.length > 0 && !ids.includes(state.selectedRaceId)) {
                     state.selectedRaceId = -1;
                     this._selectedRaceId.next(ids[0]);
                 }
                 return state;
-            })
+            }),
             // filter out meaningless states
-            .filter(state => state.selectedRaceId !== -1)
+            filter(state => state.selectedRaceId !== -1),
             // logging
-            .do(state => LOGGER.debug(`Races: ${JSON.stringify(state)}`))
+            tap(state => LOGGER.debug(`Races: ${JSON.stringify(state)}`)),
              // any subscriber gets the latest and greatest state
-            .shareReplay(1);
+            shareReplay(1)
+        );
 
-        this.races
-            .map(state => {
+        this.races.pipe(
+            map(state => {
                 const race = state.races.filter(r => r.id === state.selectedRaceId);
                 return race.length > 0 ? race[0].name : '';
             })
-            .subscribe(name => {
+        ).subscribe(name => {
                 document.title = !name ? `punchcontrol` : `${name} - punchcontrol`;
-            });
+            }
+        );
     }
 
 

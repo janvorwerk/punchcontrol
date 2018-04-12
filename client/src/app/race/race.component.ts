@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { RacesService } from '../common/services/races.service';
 import { Subscription } from 'rxjs/Subscription';
+import { map } from 'rxjs/operators';
+import { RacesService } from '../common/services/races.service';
 
 @Component({
     selector: 'app-race',
@@ -14,7 +14,7 @@ export class RaceComponent implements OnInit {
     private subs: Subscription[] = [];
 
     constructor(private raceService: RacesService) {
-        this.subs.push(this.raceService.races.map(r => r.selectedRaceId).subscribe(id => this.raceId = id));
+        this.subs.push(this.raceService.races.pipe(map(r => r.selectedRaceId)).subscribe(id => this.raceId = id));
     }
     ngOnInit() {
     }

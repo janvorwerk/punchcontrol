@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiError } from '@punchcontrol/shared/api';
 import { AppSettings } from '@punchcontrol/shared/app-settings';
-import 'rxjs/add/operator/shareReplay';
+import { shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import { LOGGING } from '../util/logging';
 
@@ -17,8 +17,10 @@ export class AdminService {
     openDatabaseError: string | null = null;
 
     constructor(private http: HttpClient) {
-        this.settings = this.http.get<AppSettings>('/api/admin/settings').shareReplay(1);
-     }
+        this.settings = this.http.get<AppSettings>('/api/admin/settings').pipe(
+            shareReplay(1)
+        );
+    }
 
     openDatabase(): void {
         this.openDatabaseError = null;
