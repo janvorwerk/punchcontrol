@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { RacesService } from '../../races.service';
+import { RacesService } from '../common/services/races.service';
 import { Subscription } from 'rxjs/Subscription';
 import { RaceDto } from '@punchcontrol/shared/race-dto';
-import { LOGGING } from '../../util/logging';
+import { LOGGING } from '../util/logging';
 
 const LOGGER = LOGGING.getLogger('TableComponent');
 

@@ -1,15 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { RacesService } from '../races.service';
+import { RacesService } from '../common/services/races.service';
 
 import { TeamsService } from '../teams/teams.service';
 import { TableData } from '@punchcontrol/shared/table-data';
-import { CellValueChangeEvent } from '../lib/table/table.component';
+import { CellValueChangeEvent } from '../common/components/table/table.component';
 import { LOGGING } from '../util/logging';
 import { Subscription } from 'rxjs/Subscription';
 import { PATCH_EL_RE, PatchDto } from '@punchcontrol/shared/patching';
 import { HttpErrorResponse } from '@angular/common/http';
-import { WebSocketService } from '../websocket.service';
+import { WebSocketService } from '../common/services/websocket.service';
 import { WebSocketMessage } from '@punchcontrol/shared/websocket-dto';
 
 const LOGGER = LOGGING.getLogger('ListingsComponent');

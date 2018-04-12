@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TableComponent } from './table/table.component';
+import { TableComponent } from '../table/table.component';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 

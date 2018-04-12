@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { RacesService } from '../races.service';
+import { RacesService } from '../common/services/races.service';
 
 @Component({
     selector: 'app-starttime',

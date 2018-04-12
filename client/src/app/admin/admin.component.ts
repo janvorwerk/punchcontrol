@@ -3,8 +3,8 @@ import { AppSettings } from '@punchcontrol/shared/app-settings';
 import { RaceDto } from '@punchcontrol/shared/race-dto';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { Theme, ThemeService } from '../lib/theme.service';
-import { RacesService } from '../races.service';
+import { Theme, ThemeService } from '../common/services/theme.service';
+import { RacesService } from '../common/services/races.service';
 import { LOGGING } from '../util/logging';
 import { AdminService } from './admin.service';
 

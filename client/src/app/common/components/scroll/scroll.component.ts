@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, ElementRef, HostListener, NgZone, OnInit } from '@angular/core';
-import { ScrollService } from '../scroll.service';
+import { ScrollService } from './scroll.service';
 import { Subject } from 'rxjs/Subject';
-import { LOGGING } from '../../util/logging';
+import { LOGGING } from '../../../util/logging';
 
 const LOGGER = LOGGING.getLogger('ScrollComponent');
 

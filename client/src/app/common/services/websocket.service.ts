@@ -6,9 +6,9 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/filter';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import { LOGGING } from './util/logging';
-import { BasepathService } from './common/services/basepath.service';
+import { BasepathService } from './basepath.service';
 import { AuthService } from './auth.service';
+import { LOGGING } from '../../util/logging';
 
 
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { LOGGING } from '../util/logging';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
+import { LOGGING } from '../../util/logging';
 const LOGGER = LOGGING.getLogger('ThemeService');
 
 const THEMES = {

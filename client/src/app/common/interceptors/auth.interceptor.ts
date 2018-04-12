@@ -6,7 +6,7 @@ import {
     } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { AuthService } from '../../auth.service';
+import { AuthService } from '../services/auth.service';
 import { LOGGING } from '../../util/logging';
 
 const LOGGER = LOGGING.getLogger('auth-token-interceptor');

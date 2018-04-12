@@ -2,10 +2,10 @@ import {
     Component, OnInit, Input, ElementRef, NgZone,
     AfterViewInit, ChangeDetectorRef, HostListener, enableProdMode, EventEmitter, OnChanges, SimpleChanges
 } from '@angular/core';
-import { ScrollService, StickyScrollable } from '../scroll.service';
-import { LOGGING } from '../../util/logging';
+import { ScrollService, StickyScrollable } from '../scroll/scroll.service';
 import { TableData, CellData, ColumnDefinition, CellType } from '@punchcontrol/shared/table-data';
 import { Output } from '@angular/core';
+import { LOGGING } from '../../../util/logging';
 
 const LOGGER = LOGGING.getLogger('TableComponent');
 

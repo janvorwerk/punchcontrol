@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AdminService } from '../admin/admin.service';
 import { Observable } from 'rxjs/Observable';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../common/services/auth.service';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({

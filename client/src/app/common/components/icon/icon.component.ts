@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, ElementRef, AfterViewInit } from '@angular/core';
-import { ThemeService } from '../theme.service';
+import { ThemeService } from '../../services/theme.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/delay';
-import { LOGGING } from '../../util/logging';
+import { LOGGING } from '../../../util/logging';
 import { Router } from '@angular/router';
 
 const LOGGER = LOGGING.getLogger('IconComponent');

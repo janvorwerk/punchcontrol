@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Observable';
-import { RacesService } from '../races.service';
+import { RacesService } from '../common/services/races.service';
 import { LOGGING } from '../util/logging';
 import { Subscription } from 'rxjs/Subscription';
 
