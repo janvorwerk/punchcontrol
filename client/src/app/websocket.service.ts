@@ -7,20 +7,14 @@ import 'rxjs/add/operator/filter';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { LOGGING } from './util/logging';
+import { BasepathService } from './common/services/basepath.service';
+import { AuthService } from './auth.service';
 
 
 
 const LOGGER = LOGGING.getLogger('websocket.service');
 
 
-function getWsPath(path: string): string {
-    const scheme = (window.location.protocol === 'https:') ? 'wss:' : 'ws:';
-    if (!path.startsWith('/')) {
-        path = `${window.location.pathname}/${path}`;
-    }
-    return `${scheme}//${window.location.host}${path}`;
-}
-const WS_URI = getWsPath('/ws');
 const BACKOFF_PERIODS_SEC = [.8, 1, 1, 2, 2, 2, 2, 5, 5, 5, 5, 15, 15, 15, 30];
 // for future use if we had to talk to servers with a different protocol: list in order of preference
 const SUPPORTED_VERSIONS = ['v1'];
@@ -36,6 +30,7 @@ const KEEP_ALIVE_PERIOD_MS = 30 * 1000;
 
 @Injectable()
 export class WebSocketService {
+    private readonly wsUrl: string;
     private ws: WebSocket | null = null;
     private backoffIndex = -1;
     private readonly receiveChannel = new Subject<WebSocketMessage>();
@@ -52,8 +47,9 @@ export class WebSocketService {
      */
     readonly state: Observable<WebSocketStateMessage> = this.stateChannel.asObservable();
 
-    constructor() {
-        this.openWebSocket('fakeauth');
+    constructor(basepathService: BasepathService, authService: AuthService) {
+        this.wsUrl = basepathService.buildWebSocketUrl('/ws');
+        this.openWebSocket(authService.token);
         Observable.merge(
             Observable.interval(KEEP_ALIVE_PERIOD_MS),
             this.state.filter(s => s.state === WebSocketState.OPEN)
@@ -87,8 +83,8 @@ export class WebSocketService {
     }
     private openWebSocket(authToken: string): void {
         if (this.ws === null) {
-            LOGGER.debug(() => `Trying to open WebSocket on ${WS_URI}`);
-            this.ws = new WebSocket(WS_URI, SUPPORTED_VERSIONS);
+            LOGGER.debug(() => `Trying to open WebSocket on ${this.wsUrl}`);
+            this.ws = new WebSocket(this.wsUrl, SUPPORTED_VERSIONS);
             this.ws.onopen = () => {
                 LOGGER.debug(`WebSocket opened, sending authentication`);
                 this.ws.send(JSON.stringify({ path: '/protocol/authorization', body: 'Bearer ' + authToken }));

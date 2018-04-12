@@ -3,10 +3,6 @@
         "target": "http://localhost:3000",
         "secure": false
     },
-    "/upload": {
-        "target": "http://localhost:3000",
-        "secure": false
-    },
     "/electron": {
         "target": "http://localhost:3000",
         "secure": false

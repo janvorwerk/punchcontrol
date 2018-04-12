@@ -8,7 +8,7 @@
     <span>Choose the data source</span>
     <ul>
         <li class="list-item">
-            <input type="radio" name="datasource" id="db">Local database file: {{settings?.recents && settings.recents[0] || ''}}<br>
+            <input type="radio" name="datasource" id="db">Local database file: {{settings?.recentDatabases && settings.recentDatabases[0] || ''}}<br>
             <button (click)="openDatabase()">Open Database</button>
         </li>
         <li class="list-item">

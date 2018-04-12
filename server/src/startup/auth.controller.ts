@@ -60,7 +60,7 @@ export class AuthController {
                 <script>
                     sessionStorage.setItem('user', '__local__');
                     sessionStorage.setItem('auth', '${this.electronSecret}');
-                    window.location.replace('/');
+                    window.location.replace(window.location.href.replace('/electron', ''));
                 </script>
             </head>
             <body>

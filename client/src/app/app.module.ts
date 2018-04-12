@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
@@ -31,6 +31,9 @@ import { RacesService } from './races.service';
 import { ThemeService } from './lib/theme.service';
 import { AdminService } from './admin/admin.service';
 import { AuthService } from './auth.service';
+import { BasepathService } from './common/services/basepath.service';
+import { AuthInterceptor } from './common/interceptors/auth.interceptor';
+import { BasepathInterceptor } from './common/interceptors/basepath.interceptor';
 
 const appRoutes: Routes = [
     { path: 'register', component: RegisterComponent },
@@ -84,10 +87,24 @@ const appRoutes: Routes = [
     providers: [
         AdminService,
         AuthService,
+        BasepathService,
         RacesService,
         TeamsService,
         ThemeService,
         WebSocketService,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true,
+        },
+        // Run the basepath LAST as it changes the URL
+        // so the AuthInterceptor which checks if the
+        // URL starts with /api would be screwed up.
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: BasepathInterceptor,
+            multi: true,
+        },
     ],
     bootstrap: [AppComponent]
 })
