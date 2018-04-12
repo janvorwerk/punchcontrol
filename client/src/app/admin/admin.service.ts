@@ -5,6 +5,7 @@ import { AppSettings } from '@punchcontrol/shared/app-settings';
 import { shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs/Observable';
 import { LOGGING } from '../util/logging';
+import { NotificationService } from '../common/components/notification/notification.service';
 
 const LOGGER = LOGGING.getLogger('AdminService');
 
@@ -14,20 +15,22 @@ export class AdminService {
 
     settings: Observable<AppSettings>;
 
-    openDatabaseError: string | null = null;
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private notificationService: NotificationService) {
         this.settings = this.http.get<AppSettings>('/api/admin/settings').pipe(
             shareReplay(1)
         );
     }
 
     openDatabase(): void {
-        this.openDatabaseError = null;
         this.http.post('/api/admin/database', {}).subscribe((r) => {
             LOGGER.infoc(() => `Database opened`);
         }, (err) => {
-            this.openDatabaseError = err.error ? err.error.message : `Could not open database`;
+            this.notificationService.notify({
+                level: 'error',
+                short: `Could not open database`,
+                detail: err.error ? err.error.message : `Could not open database`
+            }, {durationMs: 5000});
             LOGGER.error(`Could not open database ${err}`);
         });
     }

@@ -3,13 +3,12 @@ $topAndLeft: 60px;
 $margin: 8px;
 .whole {
     display: grid;
-    grid-template-areas: 'logo head rightmargin' 'nav main rightmargin' 'bottommargin bottommargin bottommargin';
+    grid-template-areas: 'logo head rightmargin' 'nav main rightmargin' 'nav bottommargin rightmargin';
     height: 100vh;
     grid-template-columns: $topAndLeft 1fr $margin;
     grid-template-rows: $topAndLeft 1fr $margin;
     &>app-icon {
         grid-area: logo;
-        // background-color: $background;
         padding: 8px;
     }
     overflow: hidden;
@@ -20,12 +19,10 @@ app-nav {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    // background-color: $background;
 }
 
 header {
     grid-area: head;
-    //background-color: $background;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -58,12 +55,16 @@ header {
 
 .rightmargin {
     grid-area: rightmargin;
-    // background-color: $background;
 }
 
 footer {
     grid-area: bottommargin;
-    // background-color: $background;
+    position: relative;
+    app-notification {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+    }
 }
 
 app-scroll {

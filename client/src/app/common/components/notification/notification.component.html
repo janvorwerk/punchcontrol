@@ -1,0 +1,13 @@
+<div class="notifbar">
+    <div *ngFor="let n of notifications" class="notification" [ngClass]="n.state" (click)="expand(n)">
+        <div class="title" [ngClass]="n.msg.level">{{n.msg.level | titlecase}}</div>
+        <div>{{n.msg.short}}</div>
+    </div>
+</div>
+<div class="glassPanel" (click)="closeExpanded()" [ngClass]="{'visible': expanded.length > 0}">
+    <div *ngFor="let n of expanded" class="notification expanded" (click)="cancel($event)">
+            <div class="title" [ngClass]="n.msg.level">{{n.msg.level | titlecase}}</div>
+            <div>{{n.msg.short}}</div>
+            <div>{{n.msg.detail}}</div>
+    </div>
+</div>

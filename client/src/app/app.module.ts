@@ -34,6 +34,8 @@ import { AuthService } from './common/services/auth.service';
 import { BasepathService } from './common/services/basepath.service';
 import { AuthInterceptor } from './common/interceptors/auth.interceptor';
 import { BasepathInterceptor } from './common/interceptors/basepath.interceptor';
+import { NotificationComponent } from './common/components/notification/notification.component';
+import { NotificationService } from './common/components/notification/notification.service';
 
 const appRoutes: Routes = [
     { path: 'register', component: RegisterComponent },
@@ -74,6 +76,7 @@ const appRoutes: Routes = [
         TabsComponent,
         TeamsComponent,
         WelcomeComponent,
+        NotificationComponent,
     ],
     imports: [
         RouterModule.forRoot(
@@ -88,6 +91,7 @@ const appRoutes: Routes = [
         AdminService,
         AuthService,
         BasepathService,
+        NotificationService,
         RacesService,
         TeamsService,
         ThemeService,
