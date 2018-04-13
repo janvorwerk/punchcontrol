@@ -43,7 +43,7 @@ export class TeamClass {
 
 
 
-    @ManyToOne(type => Race, race => race.teamClasses)
+    @ManyToOne(type => Race, race => race.teamClasses, { onDelete: 'CASCADE' })
     race: Race;
 
     @OneToMany(type => Team, teams => teams.teamClass)

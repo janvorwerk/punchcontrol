@@ -9,7 +9,7 @@ import {
     OneToOne,
     PrimaryColumn,
     PrimaryGeneratedColumn
-    } from 'typeorm';
+} from 'typeorm';
 import { Race } from './race';
 import { TeamMemberClass } from './team_member_class';
 import { IndividualRegistration } from './individual_registration';
@@ -30,7 +30,7 @@ export class CourseFamily {
 
 
 
-    @ManyToOne(type => Race, race => race.courseFamilies)
+    @ManyToOne(type => Race, race => race.courseFamilies, { onDelete: 'CASCADE' })
     race: Race;
 
 

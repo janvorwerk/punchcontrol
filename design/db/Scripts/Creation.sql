@@ -213,9 +213,9 @@ create table team (
    team_class_id   integer          ,
    organisation_id integer          ,
    constraint pk_team primary key (id),
-   foreign key(team_class_id) references team_class(id) ,
+   foreign key(team_class_id) references team_class(id) on delete set null,
    foreign key(organisation_id) references organisation(id) on delete set null,
-   foreign key(race_id) references race(id) on delete cascade
+   foreign key(race_id) references race(id) -- do not allow removing the race until all teams were removed
 )   ;
 
 -- 1st and 6th relay of N1 runs a 50', age=16-50, M|F

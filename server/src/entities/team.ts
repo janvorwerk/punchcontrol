@@ -17,7 +17,7 @@ export class Team {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(type => Race, race => race.teams)
+    @ManyToOne(type => Race, race => race.teams, { onDelete: 'RESTRICT' })
     race: Race;
 
 
@@ -57,11 +57,11 @@ export class Team {
     score: number;
 
 
-    @ManyToOne(type => TeamClass, teamClass => teamClass.teams)
+    @ManyToOne(type => TeamClass, teamClass => teamClass.teams, { onDelete: 'SET NULL' })
     teamClass: TeamClass;
 
 
-    @ManyToOne(type => Organisation, organisation => organisation.teams)
+    @ManyToOne(type => Organisation, organisation => organisation.teams, { onDelete: 'SET NULL' })
     organisation: Organisation;
 
 

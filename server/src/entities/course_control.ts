@@ -8,7 +8,7 @@ import {
     OneToOne,
     PrimaryColumn,
     PrimaryGeneratedColumn
-    } from 'typeorm';
+} from 'typeorm';
 import { Control } from './control';
 
 
@@ -39,11 +39,11 @@ export class CourseControl {
 
 
 
-    @ManyToOne(type => Control, control => control.courseControls)
+    @ManyToOne(type => Control, control => control.courseControls, { onDelete: 'RESTRICT' })
     control: Control;
 
 
-    @ManyToOne(type => ActualCourse, actualCourse => actualCourse.courseControls)
+    @ManyToOne(type => ActualCourse, actualCourse => actualCourse.courseControls, { onDelete: 'CASCADE' })
     actualCourse: ActualCourse;
 
 }

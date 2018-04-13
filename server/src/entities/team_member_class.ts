@@ -26,12 +26,12 @@ export class TeamMemberClass {
 
 
 
-    @ManyToOne(type => TeamClass, teamClass => teamClass.teamMemberClasses)
+    @ManyToOne(type => TeamClass, teamClass => teamClass.teamMemberClasses, { onDelete: 'CASCADE' })
     teamClass: TeamClass;
 
 
 
-    @ManyToOne(type => CourseFamily, courseFamily => courseFamily.teamMemberClasses)
+    @ManyToOne(type => CourseFamily, courseFamily => courseFamily.teamMemberClasses, { onDelete: 'SET NULL' })
     courseFamily: CourseFamily;
 
 

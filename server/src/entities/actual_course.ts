@@ -7,7 +7,7 @@ import {
     OneToOne,
     PrimaryColumn,
     PrimaryGeneratedColumn
-    } from 'typeorm';
+} from 'typeorm';
 import { CourseControl } from './course_control';
 import { CourseFamily } from './course_family';
 import { IndividualRegistration } from './individual_registration';
@@ -39,9 +39,7 @@ export class ActualCourse {
     })
     climbM: number;
 
-
-
-    @ManyToOne(type => CourseFamily, courseFamily => courseFamily.actualCourses)
+    @ManyToOne(type => CourseFamily, courseFamily => courseFamily.actualCourses, { onDelete: 'CASCADE' })
     courseFamily: CourseFamily;
 
 

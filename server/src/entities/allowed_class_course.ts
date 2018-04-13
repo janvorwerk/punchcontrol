@@ -5,7 +5,7 @@ import {
     ManyToOne,
     OneToMany,
     PrimaryColumn
-    } from 'typeorm';
+} from 'typeorm';
 import { CourseFamily } from './course_family';
 import { IndividualClass } from './individual_class';
 import { IndividualRegistration } from './individual_registration';
@@ -19,7 +19,8 @@ export class AllowedClassCourse {
     @ManyToOne(type => IndividualClass, individualClass => individualClass.allowedClassCourses, {
         primary: true,
         eager: true /* eager because primary */,
-        nullable: false
+        nullable: false,
+        onDelete: 'CASCADE'
     })
     individualClass: IndividualClass;
 
@@ -27,7 +28,8 @@ export class AllowedClassCourse {
     @ManyToOne(type => CourseFamily, courseFamily => courseFamily.allowedClassCourses, {
         primary: true,
         eager: true /* eager because primary */,
-        nullable: false
+        nullable: false,
+        onDelete: 'CASCADE'
     })
     courseFamily: CourseFamily;
 
@@ -50,7 +52,7 @@ export class AllowedClassCourse {
     isTimed: number;
 
 
-    @ManyToOne(type => StartlistConfig, startlistConfig => startlistConfig.allowedClassCourses)
+    @ManyToOne(type => StartlistConfig, startlistConfig => startlistConfig.allowedClassCourses, { onDelete: 'SET NULL' })
     startlistConfig: StartlistConfig;
 
     @OneToMany(type => IndividualRegistration, individualRegistrations => individualRegistrations.individualClass)

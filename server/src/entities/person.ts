@@ -69,7 +69,7 @@ export class Person {
 
 
 
-    @ManyToOne(type => Organisation, organisation => organisation.persons)
+    @ManyToOne(type => Organisation, organisation => organisation.persons, { onDelete: 'SET NULL' })
     organisation: Organisation | undefined;
 
 

@@ -16,7 +16,8 @@ export class TeamMember {
     @ManyToOne(type => Team, team => team.teamMembers, {
         primary: true,
         eager: true /* eager because primary */,
-        nullable: false
+        nullable: false,
+        onDelete: 'CASCADE'
     })
     team: Team;
 
@@ -27,17 +28,17 @@ export class TeamMember {
 
 
 
-    @ManyToOne(type => Person, person => person.teamMembers)
+    @ManyToOne(type => Person, person => person.teamMembers, { onDelete: 'SET NULL' })
     person: Person;
 
 
 
-    @ManyToOne(type => TeamMemberClass, memberClass => memberClass.teamMembers)
+    @ManyToOne(type => TeamMemberClass, memberClass => memberClass.teamMembers, { onDelete: 'RESTRICT' })
     memberClass: TeamMemberClass;
 
 
 
-    @ManyToOne(type => ActualCourse, actualCourse => actualCourse.teamMembers)
+    @ManyToOne(type => ActualCourse, actualCourse => actualCourse.teamMembers, { onDelete: 'SET NULL' })
     actualCourse: ActualCourse;
 
 }

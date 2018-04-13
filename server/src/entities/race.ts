@@ -26,7 +26,7 @@ export class Race {
     })
     name: string;
 
-    @ManyToOne(type => RacingEvent, racing_event => racing_event.races)
+    @ManyToOne(type => RacingEvent, racing_event => racing_event.races, {onDelete: 'CASCADE'})
     racingEvent: RacingEvent;
 
     @Column("text", {

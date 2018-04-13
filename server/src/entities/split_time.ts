@@ -40,6 +40,6 @@ export class SplitTime {
 
 
 
-    @ManyToOne(type => PersonResult, personResult => personResult.splitTimes)
+    @ManyToOne(type => PersonResult, personResult => personResult.splitTimes, { onDelete: 'CASCADE' })
     personResult: PersonResult;
 }

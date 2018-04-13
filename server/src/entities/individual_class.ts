@@ -49,12 +49,12 @@ export class IndividualClass {
     maxAge: number;
 
 
-    @ManyToOne(type => Race, race => race.individualClasses)
+    @ManyToOne(type => Race, race => race.individualClasses, {onDelete: 'CASCADE'})
     race: Race;
 
 
 
-    @ManyToOne(type => AllowedClassCourse, allowedClassCourse => allowedClassCourse.individualClass)
+    @OneToMany(type => AllowedClassCourse, allowedClassCourse => allowedClassCourse.individualClass)
     allowedClassCourses: AllowedClassCourse[];
 
 }

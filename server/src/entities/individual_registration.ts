@@ -28,7 +28,7 @@ export class IndividualRegistration {
     bib: string;
 
 
-    @ManyToOne(type => Person, person => person.individualRegistrations)
+    @ManyToOne(type => Person, person => person.individualRegistrations, { onDelete: 'CASCADE' })
     person: Person;
 
 
