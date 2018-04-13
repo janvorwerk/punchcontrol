@@ -1,11 +1,11 @@
-<ng-container *ngFor="let race of races">
-    <div [attr.punch-tab]="getTabState(race.id)" *ngIf="tabsEnabled"
-         [routerLink]="[ './', {race: race.id}]"
-         class="tab">
-        <a>{{race.name}}</a>
-    </div>
-    <div punch-tab="disabled" *ngIf="!tabsEnabled"
-         class="tab">
-        <a>{{race.name}}</a>
-    </div>
+<ng-container *ngIf="races && races.length > 1">
+    <ng-container *ngFor="let race of races">
+        <div [attr.punch-tab]="getTabState(race.id)" *ngIf="tabsEnabled" [routerLink]="[ './', {race: race.id}]" class="tab">
+            <a>{{race.name}}</a>
+        </div>
+        <div punch-tab="disabled" *ngIf="!tabsEnabled" class="tab">
+            <a>{{race.name}}</a>
+        </div>
+    </ng-container>
 </ng-container>
+<a class="fake"></a>

@@ -28,4 +28,12 @@ a {
     text-align: center;
     vertical-align: middle;
     font-size: 1.2rem;
+    &.fake {
+        flex-grow: 0;
+        flex-basis: 0px;
+        visibility: collapse;
+        &::after {
+            content: '&nbsp;';
+        }
+    }
 }

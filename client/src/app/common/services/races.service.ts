@@ -11,10 +11,6 @@ import { LOGGING } from '../../util/logging';
 
 const LOGGER = LOGGING.getLogger('RacesService');
 
-
-const FAKE = [{ id: 332, name: 'MD' }, { id: 399, name: 'Nuit' }, { id: 340, name: 'Relais' }];
-
-
 @Injectable()
 export class RacesService {
 
@@ -25,11 +21,7 @@ export class RacesService {
     private _racesTabsEnabled = new BehaviorSubject<boolean>(true);
 
     constructor(private router: Router, private http: HttpClient) {
-        of(FAKE) // fake HTTP call
-            .pipe(
-                delay(1000)
-            )
-            .subscribe(this._races);
+        http.get<RaceDto[]>('/api/db/races').subscribe(this._races);
 
         router.events.subscribe(e => {
             if (e instanceof ActivationStart) {
