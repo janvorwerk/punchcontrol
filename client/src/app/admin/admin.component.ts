@@ -34,6 +34,6 @@ export class AdminComponent implements OnInit, OnDestroy {
         this.themeService.setTheme(this.selectedTheme);
     }
     openDatabase() {
-        this.adminService.openDatabase();
+        this.adminService.openDatabase(this.settings.recentDatabases[0]);
     }
 }

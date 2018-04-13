@@ -39,7 +39,7 @@ export class SettingsController {
         }
         this.rec(); // we want the default values to be in the file for self-documenting conf
     }
-    // get recentDatabases() { return this.settings.recentDatabases }
+    get recentDatabases() { return this.settings.recentDatabases }
     addRecent(path: string) {
         const count = this.settings.recentDatabases.unshift(path);
         if (count > 6) {

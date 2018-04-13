@@ -10,6 +10,7 @@ import { ExpressController } from './express.controller';
 import { WebSocketController } from './websocket.controller';
 import { SettingsController } from './settings.controller';
 import { AuthController } from './auth.controller';
+import { DatabaseController } from '../db/database.controller';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -17,14 +18,26 @@ const LOGGER = LOGGING.getLogger(__filename);
 class StartupController {
     constructor(private expressCtrl: ExpressController,
         private settingsCtrl: SettingsController,
-        private authCtrl: AuthController) {
+        private authCtrl: AuthController,
+        private databaseCtrl: DatabaseController) {
     }
-    async initialize(appFolder: string, staticPath: string, secret: string) {
+    async initialize(appFolder: string, staticPath: string, secret: string, options: any) {
         // Init settings first so that other can use
         await this.settingsCtrl.initialize(appFolder);
+
+        if (options.dev) {
+            // in dev mode, we need to open the latest DB on startup
+            // so that live reload is functional, otherwise the
+            // user will chose on welcome screen
+            this.databaseCtrl.openSqliteDatabase(this.settingsCtrl.recentDatabases[0]);
+        }
         this.authCtrl.initialize(secret);
         this.expressCtrl.initialize(staticPath);
-        this.expressCtrl.startListening();
+        if (options.dev) {
+            // in dev mode, we need to start listening for the same
+            // reason as the DB
+            this.expressCtrl.startListening();
+        }
     }
 }
 
@@ -34,14 +47,14 @@ class StartupController {
  * @param appFolder is ~/.punchcontrol
  * @param staticPath the path where all static resources can be found
  */
-export async function startup(appFolder: string, staticPath: string, secret: string) {
+export async function startup(appFolder: string, staticPath: string, secret: string, options: any) {
     process.on('unhandledRejection', (reason, p) => {
         LOGGER.fatal(() => `Unhandled Rejection at:'${p}: ${reason}`);
     });
 
     const startupMgr = Container.get<StartupController>(StartupController);
     try {
-        await startupMgr.initialize(appFolder, staticPath, secret);
+        await startupMgr.initialize(appFolder, staticPath, secret, options);
     } catch(e) {
         LOGGER.fatal(() => `Could not startup app: ${e}`);
     }

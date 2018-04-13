@@ -36,7 +36,8 @@ export class AdminApi {
     registerHandlers(app: Application): void {
         app.post('/api/admin/database', async (req: Request, res: Response) => {
             try {
-                await this.databaseCtrl.openDatabase();
+                const dbPath = req.body.path;
+                await this.databaseCtrl.openSqliteDatabase(dbPath);
                 res.status(RestApiStatusCodes.SUCCESS_204_NO_CONTENT).send();
             } catch (e) {
                 const err: ApiError = { name: 'DatabaseError', message: `Could not open database: ${e.message}` };
