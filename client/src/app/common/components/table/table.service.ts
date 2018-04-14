@@ -1,0 +1,92 @@
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { PATCH_EL_RE, PatchDto } from '@punchcontrol/shared/patching';
+import { TableData } from '@punchcontrol/shared/table-data';
+import { WebSocketMessage } from '@punchcontrol/shared/websocket-dto';
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import { LOGGING } from '../../../util/logging';
+import { WebSocketService } from '../../services/websocket.service';
+import { CellValueChangeEvent } from './table.component';
+import { share } from 'rxjs/operators';
+
+const LOGGER = LOGGING.getLogger('TableService');
+
+@Injectable()
+export class TableService {
+    data: TableData | null = null;
+
+    private tableSub: Subscription | null = null;
+    private subs = new Array<Subscription>();
+
+    constructor(private websocketService: WebSocketService, private http: HttpClient) {
+        this.websocketService.receive.subscribe((msg: WebSocketMessage) => {
+            if (msg.path === '/data/update') {
+                LOGGER.infoc(() => `Receiving websocket ${msg.path}`);
+                const patches: PatchDto[] = msg.body;
+                for (const p of patches) {
+                    const found = p.patchEl.match(PATCH_EL_RE.re);
+                    if (found) {
+                        const idColumn = this.data.columns.findIndex(c => c.id === PATCH_EL_RE.getField(found, 'id'));
+                        const valueColumn = this.data.columns.findIndex(c => c.patchEl === p.patchEl);
+                        this.data.rows.forEach((line: any[], index: number) => {
+                            if (line[idColumn] === p.id && line[valueColumn] !== p.newVal) {
+                                LOGGER.infoc(() => `Receiving websocket ${msg.path}: found matching line: ${JSON.stringify(line)}`);
+                                line[valueColumn] = p.newVal;
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
+    register(url: string) {
+        if (this.tableSub !== null) {
+            this.tableSub.unsubscribe();
+            this.subs = this.subs.filter(s => s !== this.tableSub);
+        }
+        const observable = this.http.get<TableData>(url).pipe(share());
+        this.tableSub = observable.subscribe(t => this.data = t);
+        this.subs.push(this.tableSub);
+        return observable;
+    }
+
+
+    onEdit(event: CellValueChangeEvent) {
+        LOGGER.debug(() => `Edited ${event.row}-${event.col}: ${event.oldValue} => ${event.newValue}`);
+        // Store the change in our model so that it reflects the UI (otherwise restore would not work anyway)
+        this.data.rows[event.row][event.col] = event.newValue;
+
+        const patchEl: string = this.data.columns[event.col].patchEl;
+        const found = patchEl.match(PATCH_EL_RE.re);
+        if (!found) {
+            LOGGER.errorc(() => `Could not match patch EL '${patchEl}' - ignoring...`);
+        } else {
+            const idColumn = this.data.columns.findIndex(c => c.id === PATCH_EL_RE.getField(found, 'id'));
+            if (idColumn === -1) {
+                LOGGER.error(`Could not find ID column - ignoring...`);
+            } else {
+                const idCell = this.data.rows[event.row][idColumn];
+                const id = typeof (idCell) === 'number' ? idCell : parseInt(idCell, 10);
+                const patch = { id, patchEl, oldVal: event.oldValue, newVal: event.newValue };
+                const patches = [patch];
+                this.patch(patches).subscribe(
+                    (resp) => { LOGGER.info(`Patched OK for ${patches.length} changes`); },
+                    (error: HttpErrorResponse) => {
+                        LOGGER.error(`Patched KO for ${patches.length} changes: ${error.message}`);
+                        this.restore(event);
+                    }
+                );
+            }
+        }
+    }
+
+    private restore(event: CellValueChangeEvent): void {
+        this.data.rows[event.row][event.col] = event.oldValue;
+    }
+
+    private patch(patches: PatchDto[]): Observable<any> {
+        return this.http.patch('/api/db/patch', patches);
+    }
+}

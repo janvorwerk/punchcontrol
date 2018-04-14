@@ -1,5 +1,5 @@
 <p>
     Teams for race {{raceId | async}}
 </p>
-<app-table *ngIf="data" [data]="data" (edit)="onEdit($event)"></app-table>
+<app-table *ngIf="t.data" [data]="t.data" (edit)="t.onEdit($event)"></app-table>
 <app-lorem></app-lorem>
