@@ -45,19 +45,9 @@ class DatabaseWriter {
 
     constructor(private em: EntityManager, private data: string[][]) {
     }
-    async init() {
-        let event = await this.em.findOne(RacingEvent, { name: 'Test event' });
-        if (!event) {
-            event = this.em.create(RacingEvent, { name: 'Test event' });
-            event = await this.em.save(event);
-        }
-        // FIXME: we should provide the race into which we want to import... OK for now
-        let race = await this.em.findOne(Race);
-        if (!race) {
-            race = this.em.create(Race, { name: 'Test race', racingEvent: event, form: 'FIXME', startMode: 'FIXME' });
-            race = await this.em.save(race);
-        }
-        this.race = race;
+    async init(raceId: number) {
+        let races = await this.em.findByIds(Race, [raceId]);
+        this.race = races[0];
     }
     async storeRelay(): Promise<number> {
         await this.storeOrganisations();
@@ -170,7 +160,7 @@ class DatabaseWriter {
 }
 
 
-export async function importFccoRegistrationCsv(connection: Connection, csvContent: string): Promise<number> {
+export async function importFccoRegistrationCsv(raceId: number, connection: Connection, csvContent: string): Promise<number> {
     const parseAsync = util.promisify<string, csvparse.Options, string[][]>(csvparse);
     const data = await parseAsync(csvContent, { delimiter: ';', rowDelimiter: '\r\n', relax_column_count: true });
     const headers = data[0];
@@ -178,7 +168,7 @@ export async function importFccoRegistrationCsv(connection: Connection, csvConte
 
     const importedRunners = await connection.transaction(async transactionalEntityManager => {
         const dbwriter = new DatabaseWriter(transactionalEntityManager, data.slice(1));
-        await dbwriter.init();
+        await dbwriter.init(raceId);
         if (isRelay) {
             return await dbwriter.storeRelay();
         } else {
