@@ -87,6 +87,6 @@ export class TableService {
     }
 
     private patch(patches: PatchDto[]): Observable<any> {
-        return this.http.patch('/api/db/patch', patches);
+        return this.http.patch('/api/generic/patch', patches);
     }
 }

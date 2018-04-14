@@ -3,7 +3,7 @@ import { PATCH_EL_RE, QUERY_EL_RE } from '@punchcontrol/shared/patching';
 import { PatchDto } from '@punchcontrol/shared/patching';
 import { CellType, ColumnDefinition, TableData } from '@punchcontrol/shared/table-data';
 import { Service } from 'typedi';
-import { Connection } from 'typeorm';
+import { Connection, SelectQueryBuilder } from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { DatabaseController } from '../db/database.controller';
 import { TeamMember } from '../entities/team_member';
@@ -30,7 +30,7 @@ export class GenericApi {
         private webSocketCtrl: WebSocketController) { }
 
     registerHandlers(app: Application): void {
-        app.patch("/api/db/patch", async (req, res) => {
+        app.patch("/api/generic/patch", async (req, res) => {
             try {
                 const patches: PatchDto[] = req.body;
                 const err = await this.databaseCtrl.connection.transaction(async em => {
@@ -72,7 +72,7 @@ export class GenericApi {
     }
 
 
-    async queryForColumns(connection: Connection, columns: ColumnDefinition[]): Promise<TableData> {
+    async queryForColumns(connection: Connection, columns: ColumnDefinition[], queryModifier: ((q: SelectQueryBuilder<{}>) => void)): Promise<TableData> {
         // the hidden columns should only be displayed at the end!
         columns = [
             ...columns.filter(col => !col.hidden),
@@ -104,6 +104,7 @@ export class GenericApi {
                 builder.addSelect(`entity.${col.field}`, col.id);
             }
         });
+        queryModifier(builder);
         const result = await builder.getRawMany();
         const data: TableData = { columns: columns, rows: result.map(line => columns.map(col => line[col.id])) }
         return data;
@@ -135,6 +136,13 @@ ALL_COLUMNS.set('TeamMember', [
         id: 'teamName',
         el: 'TeamMember.team>team.name',
         patchEl: 'Team#teamId.name'
+    },
+    {
+        header: 'Race id',
+        id: 'raceId',
+        el: 'TeamMember.team>team.race_id',
+        readonly: true,
+        hidden: true
     },
     {
         header: 'First name',

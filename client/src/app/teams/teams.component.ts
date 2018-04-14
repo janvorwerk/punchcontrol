@@ -21,17 +21,23 @@ const LOGGER = LOGGING.getLogger('ListingsComponent');
   styleUrls: ['./teams.component.scss'],
   providers: [TableService]
 })
-export class TeamsComponent implements OnInit {
+export class TeamsComponent implements OnInit, OnDestroy {
+
     raceId: Observable<number>;
 
+
+    private subs = new Array<Subscription>();
     constructor(private websocketService: WebSocketService,
         public t: TableService,
         private raceService: RacesService) {
 
         this.raceId = this.raceService.races.pipe(map(r => r.selectedRaceId));
-        this.t.register(`/api/db/teammembers`);
+        this.subs.push(this.raceId.subscribe(id => this.t.register(`/api/races/${id}/teammembers`)));
     }
 
     ngOnInit() {
+    }
+    ngOnDestroy(): void {
+        this.subs.forEach(s => s.unsubscribe());
     }
 }

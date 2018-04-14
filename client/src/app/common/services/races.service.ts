@@ -21,7 +21,7 @@ export class RacesService {
     private _racesTabsEnabled = new BehaviorSubject<boolean>(true);
 
     constructor(private router: Router, private http: HttpClient) {
-        http.get<RaceDto[]>('/api/db/races').subscribe(this._races);
+        http.get<RaceDto[]>('/api/races').subscribe(this._races);
 
         router.events.subscribe(e => {
             if (e instanceof ActivationStart) {
@@ -73,7 +73,7 @@ export class RacesService {
     upload(raceId: number, files: File[]): void {
         for (let i = 0; i < files.length; i++) {
             LOGGER.infoc(() => `File ${i}: '${files[i].name}' (${files[i].size} bytes)`);
-            this.http.post(`/api/db/races/${raceId}/registration`, files[i]).subscribe((r) => {
+            this.http.post(`/api/races/${raceId}/registration`, files[i]).subscribe((r) => {
                 LOGGER.infoc(() => `File '${files[i].name}' uploaded`);
             }, (err) => {
                 LOGGER.error(`Could not upload '${files[i].name}' ${err}`);

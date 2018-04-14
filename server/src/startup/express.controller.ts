@@ -60,18 +60,18 @@ export class ExpressController {
         // serve static files
         this.app.use(express.static(staticPath));
 
-        // Check that database is open for all calls to /api/db/....
-        const checkDatabaseOpenHandler: express.RequestHandler = (req, res, next) => {
-            const connection = this.databaseCtrl.hasConnection;
-            if (!connection) {
-                const err: ApiError = { name: 'DatabaseError', message: `No database currently selected` };
-                LOGGER.error(err.message);
-                res.status(RestApiStatusCodes.SERVER_503_SERVICE_UNAVAILABLE).send(err);
-            } else {
-                next();
-            }
-        };
-        this.app.use('/api/db/', checkDatabaseOpenHandler);
+        // // Check that database is open for all calls to /api/db/....
+        // const checkDatabaseOpenHandler: express.RequestHandler = (req, res, next) => {
+        //     const connection = this.databaseCtrl.hasConnection;
+        //     if (!connection) {
+        //         const err: ApiError = { name: 'DatabaseError', message: `No database currently selected` };
+        //         LOGGER.error(err.message);
+        //         res.status(RestApiStatusCodes.SERVER_503_SERVICE_UNAVAILABLE).send(err);
+        //     } else {
+        //         next();
+        //     }
+        // };
+        // this.app.use('/api/db/', checkDatabaseOpenHandler);
 
         // Register all routes
         this.authCtrl.registerHandlers(this.app)

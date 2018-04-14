@@ -26,12 +26,16 @@ export class TeamApi {
     constructor(
         private databaseCtrl: DatabaseController,
         private webSocketCtrl: WebSocketController,
-        private databaseApiCtrl: GenericApi) { }
+        private genericApi: GenericApi) { }
 
     registerHandlers(app: Application): any {
-        app.get("/api/db/teammembers", async (req: Request, res: Response) => {
-            const cols = this.databaseApiCtrl.getColumns('TeamMember'); // TODO: filter with the actually requested columns
-            const data = await this.databaseApiCtrl.queryForColumns(this.databaseCtrl.connection, cols);
+        app.get('/api/races/:raceId/teammembers', async (req: Request, res: Response) => {
+            const raceId = parseInt(req.params.raceId)
+
+            const cols = this.genericApi.getColumns('TeamMember'); // TODO: filter with the actually requested columns
+            const data = await this.genericApi.queryForColumns(this.databaseCtrl.connection, cols, q => {
+                q.where("raceId = :raceId", { raceId: raceId });
+            });
             res.status(RestApiStatusCodes.SUCCESS_200_OK).send(data);
         });
     }

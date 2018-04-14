@@ -21,7 +21,7 @@ export class RaceApi {
         private webSocketCtrl: WebSocketController) { }
 
     registerHandlers(app: Application): any {
-        app.post('/api/db/races/:raceId/registration', async (req, res) => {
+        app.post('/api/races/:raceId/registration', async (req, res) => {
             // FIXME: check the Content-Type to see if we upload a file or create a single registration
             try {
                 const raceId = parseInt(req.params.raceId)
@@ -38,11 +38,11 @@ export class RaceApi {
             }
         });
 
-        app.get("/api/db/races", async (req: Request, res: Response) => {
+        app.get("/api/races", async (req: Request, res: Response) => {
             const races = await this.databaseCtrl.connection.getRepository(Race).find();
             res.status(RestApiStatusCodes.SUCCESS_200_OK).send(races);
         });
-        app.post("/api/db/races", async (req: Request, res: Response) => {
+        app.post("/api/races", async (req: Request, res: Response) => {
             try {
                 const eventRepo = this.databaseCtrl.connection.getRepository(RacingEvent);
                 let event = await eventRepo.findOne();
@@ -60,7 +60,7 @@ export class RaceApi {
                 res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(err);
             }
         });
-        app.get("/api/db/races/:raceId", async (req: Request, res: Response) => {
+        app.get("/api/races/:raceId", async (req: Request, res: Response) => {
             try {
                 const raceId = parseInt(req.params.raceId)
                 const repo = this.databaseCtrl.connection.getRepository(Race);
@@ -79,7 +79,7 @@ export class RaceApi {
                 res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(err);
             }
         });
-        app.delete("/api/db/races/:raceId", async (req: Request, res: Response) => {
+        app.delete("/api/races/:raceId", async (req: Request, res: Response) => {
             try {
                 const raceId = parseInt(req.params.raceId)
                 const repo = this.databaseCtrl.connection.getRepository(Race);
