@@ -19,13 +19,11 @@
 <section>
     <legend>Races</legend>
     <div class="help">Punchcontrol manages several races simultaneously. You can add/suppress races here.</div>
-    <ul>
-        <li *ngFor="let r of allRaces" class="list-item">
-            <input type="checkbox">{{r.name}}{{r.startMode}}{{r.form}}
-        </li>
-    </ul>
+
+    <app-table *ngIf="t.data" [data]="t.data" (edit)="t.onEdit($event)"></app-table>
+
     <div class="button-bar">
-        <button>Add race</button>
+        <button (click)="addRace()">Add race</button>
         <button>Suppress selected races</button>
     </div>
 </section>

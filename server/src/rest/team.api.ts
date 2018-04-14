@@ -29,12 +29,12 @@ export class TeamApi {
         private genericApi: GenericApi) { }
 
     registerHandlers(app: Application): any {
-        app.get('/api/races/:raceId/teammembers', async (req: Request, res: Response) => {
+        app.get('/api/generic/races/:raceId/teammembers', async (req: Request, res: Response) => {
             const raceId = parseInt(req.params.raceId)
 
             const cols = this.genericApi.getColumns('TeamMember'); // TODO: filter with the actually requested columns
             const data = await this.genericApi.queryForColumns(this.databaseCtrl.connection, cols, q => {
-                q.where("raceId = :raceId", { raceId: raceId });
+                q.where("raceId = :raceId", { raceId });
             });
             res.status(RestApiStatusCodes.SUCCESS_200_OK).send(data);
         });

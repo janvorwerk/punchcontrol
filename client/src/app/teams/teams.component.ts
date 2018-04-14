@@ -27,12 +27,11 @@ export class TeamsComponent implements OnInit, OnDestroy {
 
 
     private subs = new Array<Subscription>();
-    constructor(private websocketService: WebSocketService,
-        public t: TableService,
+    constructor(public t: TableService,
         private raceService: RacesService) {
 
         this.raceId = this.raceService.races.pipe(map(r => r.selectedRaceId));
-        this.subs.push(this.raceId.subscribe(id => this.t.register(`/api/races/${id}/teammembers`)));
+        this.subs.push(this.raceId.subscribe(id => this.t.register(`/api/generic/races/${id}/teammembers`)));
     }
 
     ngOnInit() {

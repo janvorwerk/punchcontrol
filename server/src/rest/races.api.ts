@@ -1,15 +1,14 @@
-import { Request, Response, Application } from 'express';
+import { ApiError, RestApiStatusCodes } from '@punchcontrol/shared/api';
+import { Application, Request, Response } from 'express';
 import { Service } from 'typedi';
+import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { DatabaseController } from '../db/database.controller';
 import { Race } from '../entities/race';
-import { ExpressController } from '../startup/express.controller';
-import { importFccoRegistrationCsv } from '../util/ffcoparser';
-import { WebSocketController } from '../startup/websocket.controller';
-import { LOGGING } from '../util/logging';
-import { ApiError, RestApiStatusCodes } from '@punchcontrol/shared/api';
-import { readRequest } from '../util/http-util';
-import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { RacingEvent } from '../entities/racing_event';
+import { importFccoRegistrationCsv } from '../util/ffcoparser';
+import { readRequest } from '../util/http-util';
+import { LOGGING } from '../util/logging';
+import { GenericApi } from './generic.api';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -18,7 +17,7 @@ export class RaceApi {
 
     constructor(
         private databaseCtrl: DatabaseController,
-        private webSocketCtrl: WebSocketController) { }
+        private genericApi: GenericApi) { }
 
     registerHandlers(app: Application): any {
         app.post('/api/races/:raceId/registration', async (req, res) => {
@@ -83,8 +82,8 @@ export class RaceApi {
             try {
                 const raceId = parseInt(req.params.raceId)
                 const repo = this.databaseCtrl.connection.getRepository(Race);
-                await repo.delete(raceId);
-                LOGGER.info(() => `Deleted race #${raceId} OK`);
+                const del = await repo.delete(raceId);
+                LOGGER.info(() => `Deleted race #${raceId} OK: ${JSON.stringify(del)}`);
                 res.status(RestApiStatusCodes.SUCCESS_204_NO_CONTENT).send();
             } catch (e) {
                 const err: ApiError = { name: 'InternalError', message: `Could not delete race: ${e}` };
@@ -92,5 +91,11 @@ export class RaceApi {
                 res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(err);
             }
         });
+        app.get('/api/generic/races', async (req: Request, res: Response) => {
+            const cols = this.genericApi.getColumns('Races'); // TODO: filter with the actually requested columns
+            const data = await this.genericApi.queryForColumns(this.databaseCtrl.connection, cols, q => {});
+            res.status(RestApiStatusCodes.SUCCESS_200_OK).send(data);
+        });
+
     }
 }
