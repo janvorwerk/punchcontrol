@@ -9,6 +9,7 @@ import { importFccoRegistrationCsv } from '../util/ffcoparser';
 import { readRequest } from '../util/http-util';
 import { LOGGING } from '../util/logging';
 import { GenericApi } from './generic.api';
+import { WebSocketController } from '../startup/websocket.controller';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -17,7 +18,8 @@ export class RaceApi {
 
     constructor(
         private databaseCtrl: DatabaseController,
-        private genericApi: GenericApi) { }
+        private genericApi: GenericApi,
+        private webSocketCtrl: WebSocketController) { }
 
     registerHandlers(app: Application): any {
         app.post('/api/races/:raceId/registration', async (req, res) => {
@@ -52,6 +54,8 @@ export class RaceApi {
                 let race = repo.create(params);
                 race = await repo.save(race);
                 LOGGER.info(() => `Created race OK: ${JSON.stringify(race)}`);
+                const races = await this.databaseCtrl.connection.getRepository(Race).find();
+                this.webSocketCtrl.broadcast({ path: '/api/races', body: races })
                 res.status(RestApiStatusCodes.SUCCESS_201_CREATED).send(race);
             } catch (e) {
                 const err: ApiError = { name: 'InternalError', message: `Could not create race: ${e}` };
@@ -84,6 +88,8 @@ export class RaceApi {
                 const repo = this.databaseCtrl.connection.getRepository(Race);
                 const del = await repo.delete(raceId);
                 LOGGER.info(() => `Deleted race #${raceId} OK: ${JSON.stringify(del)}`);
+                const races = await this.databaseCtrl.connection.getRepository(Race).find();
+                this.webSocketCtrl.broadcast({ path: '/api/races', body: races })
                 res.status(RestApiStatusCodes.SUCCESS_204_NO_CONTENT).send();
             } catch (e) {
                 const err: ApiError = { name: 'InternalError', message: `Could not delete race: ${e}` };
@@ -93,7 +99,7 @@ export class RaceApi {
         });
         app.get('/api/generic/races', async (req: Request, res: Response) => {
             const cols = this.genericApi.getColumns('Races'); // TODO: filter with the actually requested columns
-            const data = await this.genericApi.queryForColumns(this.databaseCtrl.connection, cols, q => {});
+            const data = await this.genericApi.queryForColumns(this.databaseCtrl.connection, cols, q => { });
             res.status(RestApiStatusCodes.SUCCESS_200_OK).send(data);
         });
 

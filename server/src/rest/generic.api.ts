@@ -30,7 +30,7 @@ export class GenericApi {
         private webSocketCtrl: WebSocketController) { }
 
     registerHandlers(app: Application): void {
-        app.patch("/api/generic/patch", async (req, res) => {
+        app.patch('/api/generic/patch', async (req, res) => {
             try {
                 const patches: PatchDto[] = req.body;
                 const err = await this.databaseCtrl.connection.transaction(async em => {
@@ -60,7 +60,7 @@ export class GenericApi {
                 if (err) {
                     res.status(RestApiStatusCodes.CLIENT_409_CONFLICT).send(err);
                 } else {
-                    this.webSocketCtrl.broadcast({ path: '/data/update', body: patches })
+                    this.webSocketCtrl.broadcast({ path: '/api/generic/patch', body: patches })
                     res.status(RestApiStatusCodes.SUCCESS_204_NO_CONTENT).send();
                 }
             } catch (e) {

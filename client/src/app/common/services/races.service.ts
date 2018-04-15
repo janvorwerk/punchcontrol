@@ -8,6 +8,8 @@ import { combineLatest } from 'rxjs/observable/combineLatest';
 import { of } from 'rxjs/observable/of';
 import { delay, distinctUntilChanged, filter, map, shareReplay, tap } from 'rxjs/operators';
 import { LOGGING } from '../../util/logging';
+import { WebSocketService } from './websocket.service';
+import { WebSocketMessage } from '@punchcontrol/shared/websocket-dto';
 
 const LOGGER = LOGGING.getLogger('RacesService');
 
@@ -20,7 +22,7 @@ export class RacesService {
     private _selectedRaceId = new BehaviorSubject<number>(-1);
     private _racesTabsEnabled = new BehaviorSubject<boolean>(true);
 
-    constructor(private router: Router, private http: HttpClient) {
+    constructor(private router: Router, private http: HttpClient, private webSocketService: WebSocketService) {
         http.get<RaceDto[]>('/api/races').subscribe(rr => this._races.next(rr));
 
         router.events.subscribe(e => {
@@ -66,8 +68,15 @@ export class RacesService {
             })
         ).subscribe(name => {
             document.title = !name ? `punchcontrol` : `${name} - punchcontrol`;
-        }
-        );
+        });
+
+
+        this.webSocketService.receive.subscribe((msg: WebSocketMessage) => {
+            if (msg.path === '/api/races') {
+                LOGGER.infoc(() => `Receiving websocket ${msg.path}`);
+                this._races.next(msg.body);
+            }
+        });
     }
 
 
@@ -89,10 +98,9 @@ export class RacesService {
             'startMode': 'FIXME'
         }).subscribe(r => {
             // const race: RaceDto = {id: r.id, name: r.name, startMode: r.startMode, form: r.form};
-            const races = [...this._races.getValue(), r];
-            LOGGER.debug(`Races: ${JSON.stringify(races)}`);
-
-            this._races.next(races);
+            // const races = [...this._races.getValue(), r];
+            LOGGER.debug(`Race created`);
+            // this._races.next(races);
         });
     }
 }

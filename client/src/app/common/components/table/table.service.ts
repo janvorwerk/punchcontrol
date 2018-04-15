@@ -4,6 +4,7 @@ import { PATCH_EL_RE, PatchDto } from '@punchcontrol/shared/patching';
 import { TableData } from '@punchcontrol/shared/table-data';
 import { WebSocketMessage } from '@punchcontrol/shared/websocket-dto';
 import { Observable } from 'rxjs/Observable';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Subscription } from 'rxjs/Subscription';
 import { LOGGING } from '../../../util/logging';
 import { WebSocketService } from '../../services/websocket.service';
@@ -16,12 +17,24 @@ const LOGGER = LOGGING.getLogger('TableService');
 export class TableService {
     data: TableData | null = null;
 
-    private tableSub: Subscription | null = null;
+    private dataSubject = new ReplaySubject<TableData>(1);
+    // private tableSub: Subscription | null = null;
     private subs = new Array<Subscription>();
 
     constructor(private websocketService: WebSocketService, private http: HttpClient) {
+        this.dataSubject.subscribe(t => this.data = t);
+        // this.subs.push(this.tableSub);
+    }
+
+    register(url: string, wsMessagePath?: string) {
+        // if (this.tableSub !== null) {
+        //     this.tableSub.unsubscribe();
+        //     this.subs = this.subs.filter(s => s !== this.tableSub);
+        // }
+        this.http.get<TableData>(url).subscribe(data => this.dataSubject.next(data));
+
         this.websocketService.receive.subscribe((msg: WebSocketMessage) => {
-            if (msg.path === '/data/update') {
+            if (msg.path === '/api/generic/patch') {
                 LOGGER.infoc(() => `Receiving websocket ${msg.path}`);
                 const patches: PatchDto[] = msg.body;
                 for (const p of patches) {
@@ -37,19 +50,13 @@ export class TableService {
                         });
                     }
                 }
+            } else if (msg.path === wsMessagePath) {
+                this.http.get<TableData>(url).subscribe(data => this.dataSubject.next(data));
             }
         });
-    }
 
-    register(url: string) {
-        if (this.tableSub !== null) {
-            this.tableSub.unsubscribe();
-            this.subs = this.subs.filter(s => s !== this.tableSub);
-        }
-        const observable = this.http.get<TableData>(url).pipe(share());
-        this.tableSub = observable.subscribe(t => this.data = t);
-        this.subs.push(this.tableSub);
-        return observable;
+
+        return this.dataSubject.asObservable();
     }
 
 
