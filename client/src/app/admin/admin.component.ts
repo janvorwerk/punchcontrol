@@ -7,6 +7,7 @@ import { RacesService } from '../common/services/races.service';
 import { Theme, ThemeService } from '../common/services/theme.service';
 import { AdminService } from './admin.service';
 import { TableService } from '../common/components/table/table.service';
+import { TableRange } from '../common/components/table/table.component';
 
 @Component({
     selector: 'app-admin',
@@ -19,6 +20,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     selectedTheme: Theme;
     allThemes: Theme[];
     allRaces: RaceDto[];
+    private raceSelection: TableRange|null;
 
     private subs: Subscription[] = [];
     constructor(private themeService: ThemeService,
@@ -45,5 +47,19 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
     addRace() {
         this.racesService.createRace();
+    }
+    onRaceSelection(selection: TableRange|null) {
+        this.raceSelection = selection;
+    }
+    deleteRaces() {
+        if (this.raceSelection) {
+            const ids = [];
+            const col = this.t.data.columns.findIndex(c => c.id === 'raceId');
+            for (let r = this.raceSelection.startRow; r <= this.raceSelection.endRow; r++) {
+                const row = this.t.data.rows[r];
+                ids.push(row[col]);
+            }
+            this.racesService.deleteRaces(ids);
+        }
     }
 }

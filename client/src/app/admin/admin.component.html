@@ -20,11 +20,11 @@
     <legend>Races</legend>
     <div class="help">Punchcontrol manages several races simultaneously. You can add/suppress races here.</div>
 
-    <app-table *ngIf="t.data" [data]="t.data" (edit)="t.onEdit($event)"></app-table>
+    <app-table *ngIf="t.data" [data]="t.data" (edit)="t.onEdit($event)" (selection)="onRaceSelection($event)"></app-table>
 
     <div class="button-bar">
         <button (click)="addRace()">Add race</button>
-        <button>Suppress selected races</button>
+        <button (click)="deleteRaces()">Suppress selected races</button>
     </div>
 </section>
 <section>

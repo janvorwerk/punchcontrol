@@ -103,4 +103,9 @@ export class RacesService {
             // this._races.next(races);
         });
     }
+    deleteRaces(ids: string[]): void {
+        ids.forEach( id => {
+            this.http.delete<void>(`/api/races/${id}`).subscribe(() => LOGGER.info(`Deleted race ${id}`));
+        });
+    }
 }

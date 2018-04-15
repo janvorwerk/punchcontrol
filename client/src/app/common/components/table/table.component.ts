@@ -20,16 +20,16 @@ interface CellRef {
     row: number;
     col: number;
 }
-interface Range {
+export interface TableRange {
     startCol: number;
     endCol: number;
     startRow: number;
     endRow: number;
-    equals(other: Range | null): boolean;
+    equals(other: TableRange | null): boolean;
     contains(cell: CellRef);
     containsCol(col: number);
 }
-class ColumnRange implements Range {
+class ColumnRange implements TableRange {
     constructor(public start: number, public end: number, private rows) { }
 
     get startCol(): number {
@@ -44,7 +44,7 @@ class ColumnRange implements Range {
     get endRow(): number {
         return this.rows.length - 1;
     }
-    equals(other: Range): boolean {
+    equals(other: TableRange): boolean {
         if (other === null) {
             return false;
         } else if (!(other instanceof ColumnRange)) {
@@ -59,7 +59,7 @@ class ColumnRange implements Range {
         return col >= this.start && col <= this.end;
     }
 }
-class CellRange implements Range {
+class CellRange implements TableRange {
     constructor(public start: CellRef, public end: CellRef) { }
 
     get startCol(): number {
@@ -74,7 +74,7 @@ class CellRange implements Range {
     get endRow(): number {
         return this.end.row;
     }
-    equals(other: Range | null): boolean {
+    equals(other: TableRange | null): boolean {
         if (other === null) {
             return false;
         } else if (!(other instanceof CellRange)) {
@@ -112,10 +112,11 @@ function getTargetCell(event: Event): Element {
 export class TableComponent implements OnInit, OnChanges, AfterViewInit, StickyScrollable {
     @Input() data: TableData;
     @Output() edit = new EventEmitter<CellValueChangeEvent>();
+    @Output() selection = new EventEmitter<TableRange|null>();
     sticky: boolean;
     top: number;
     tableWidth: number;
-    private selectionRange: Range | null = null;
+    private _selectionRange: TableRange | null = null;
     private selectionStart: CellRef | null = null;
     private editedCell: Element | null = null;
     /**
@@ -147,6 +148,14 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, StickyS
         });
     }
 
+    private set selectionRange(range: TableRange|null) {
+        this._selectionRange = range;
+        this.selection.emit(range);
+    }
+
+    private get selectionRange(): TableRange|null {
+        return this._selectionRange;
+    }
     ngOnInit() {
         this.bottomElem = this.elementRef.nativeElement.querySelector('.bottom');
     }
@@ -225,7 +234,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, StickyS
             LOGGER.warnc(() => `Could not find data-col attr (target is ${event.target}`);
             return;
         }
-        let newSelectionRange: Range;
+        let newSelectionRange: TableRange;
         if (this.selectionStart.row !== -1) {
             const row = parseInt(el.parentElement.getAttribute('data-row'), 10);
 
