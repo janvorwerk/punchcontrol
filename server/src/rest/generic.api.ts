@@ -46,7 +46,8 @@ export class GenericApi {
                             if (dbEntity[field] !== p.oldVal) {
                                 const message = `Concurrent modification for ${entity}#${p.id}: expecting ${p.oldVal} found ${dbEntity[field]}`
                                 LOGGER.error(message);
-                                const err: ApiError = { name: 'ConcurrentModification', message };
+                                const err: ApiError = { code: 'ConcurrentModification', short: `Concurrent modification`, detail: message };
+                                LOGGER.error(err.detail);
                                 return err;
                             }
                             const part: DeepPartial<any> = {};
@@ -64,8 +65,8 @@ export class GenericApi {
                     res.status(RestApiStatusCodes.SUCCESS_204_NO_CONTENT).send();
                 }
             } catch (e) {
-                const err: ApiError = { name: 'InternalError', message: `Could not patch: ${e}` };
-                LOGGER.error(err.message);
+                const err: ApiError = { code: 'DatabaseError', short: `Could not save change`, detail: `${e}` };
+                LOGGER.error(err.short);
                 res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(e);
             }
         });

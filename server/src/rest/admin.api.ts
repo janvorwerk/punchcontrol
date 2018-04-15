@@ -40,8 +40,8 @@ export class AdminApi {
                 await this.databaseCtrl.openSqliteDatabase(dbPath);
                 res.status(RestApiStatusCodes.SUCCESS_204_NO_CONTENT).send();
             } catch (e) {
-                const err: ApiError = { name: 'DatabaseError', message: `Could not open database: ${e.message}` };
-                LOGGER.error(err.message);
+                const err: ApiError = { code: 'DatabaseError', short: `Could not open database`, detail: `${e}` };
+                LOGGER.error(err.short);
                 res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(err);
             }
         });

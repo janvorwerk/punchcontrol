@@ -9,7 +9,7 @@ import { Observable } from 'rxjs/Observable';
 import { AuthService } from '../services/auth.service';
 import { LOGGING } from '../../util/logging';
 
-const LOGGER = LOGGING.getLogger('auth-token-interceptor');
+const LOGGER = LOGGING.getLogger('AuthInterceptor');
 
 /**
  * Adds the authentication token to all API calls.

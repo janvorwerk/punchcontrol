@@ -35,6 +35,7 @@ import { AuthInterceptor } from './common/interceptors/auth.interceptor';
 import { BasepathInterceptor } from './common/interceptors/basepath.interceptor';
 import { NotificationComponent } from './common/components/notification/notification.component';
 import { NotificationService } from './common/components/notification/notification.service';
+import { ErrorInterceptor } from './common/interceptors/error.interceptor';
 
 const appRoutes: Routes = [
     { path: 'register', component: RegisterComponent },
@@ -97,6 +98,11 @@ const appRoutes: Routes = [
         {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthInterceptor,
+            multi: true,
+        },
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: ErrorInterceptor,
             multi: true,
         },
         // Run the basepath LAST as it changes the URL

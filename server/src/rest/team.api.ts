@@ -1,4 +1,4 @@
-import { RestApiStatusCodes } from '@punchcontrol/shared/api';
+import { RestApiStatusCodes, ApiError } from '@punchcontrol/shared/api';
 import { PatchDto } from '@punchcontrol/shared/patching';
 import { PATCH_EL_RE, QUERY_EL_RE } from '@punchcontrol/shared/patching';
 import { PersonDto } from '@punchcontrol/shared/person-dto';
@@ -30,13 +30,20 @@ export class TeamApi {
 
     registerHandlers(app: Application): any {
         app.get('/api/generic/races/:raceId/teammembers', async (req: Request, res: Response) => {
-            const raceId = parseInt(req.params.raceId)
+            try {
 
-            const cols = this.genericApi.getColumns('TeamMember'); // TODO: filter with the actually requested columns
-            const data = await this.genericApi.queryForColumns(this.databaseCtrl.connection, cols, q => {
-                q.where("raceId = :raceId", { raceId });
-            });
-            res.status(RestApiStatusCodes.SUCCESS_200_OK).send(data);
+                const raceId = parseInt(req.params.raceId)
+
+                const cols = this.genericApi.getColumns('TeamMember'); // TODO: filter with the actually requested columns
+                const data = await this.genericApi.queryForColumns(this.databaseCtrl.connection, cols, q => {
+                    q.where("raceId = :raceId", { raceId });
+                });
+                res.status(RestApiStatusCodes.SUCCESS_200_OK).send(data);
+            } catch (e) {
+                const err: ApiError = { code: 'DatabaseError', short: `Could not get team members`, detail: `${e}` };
+                LOGGER.error(err.short, e);
+                res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(err);
+            }
         });
     }
 }

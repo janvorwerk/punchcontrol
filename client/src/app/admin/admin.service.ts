@@ -25,13 +25,6 @@ export class AdminService {
     openDatabase(path: string): void {
         this.http.post('/api/admin/database', { path }).subscribe((r) => {
             LOGGER.infoc(() => `Database opened`);
-        }, (err) => {
-            this.notificationService.notify({
-                level: 'error',
-                short: `Could not open database`,
-                detail: err.error ? err.error.message : `Could not open database`
-            }, { durationMs: 5000 });
-            LOGGER.error(`Could not open database ${err}`);
         });
     }
 }

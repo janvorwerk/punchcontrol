@@ -33,8 +33,8 @@ export class RaceApi {
                 LOGGER.info(`Imported ${importedRunnersCount} runners OK`);
                 res.status(RestApiStatusCodes.SUCCESS_200_OK).send({ importedRunnersCount });
             } catch (e) {
-                const err: ApiError = { name: 'InternalError', message: `Import error: ${e}` };
-                LOGGER.error(err.message, e);
+                const err: ApiError = { code: 'DatabaseError', short: `Could not import file`, detail: `${e}` };
+                LOGGER.error(err.short, e);
                 res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(err);
             }
         });
@@ -58,8 +58,8 @@ export class RaceApi {
                 this.webSocketCtrl.broadcast({ path: '/api/races', body: races })
                 res.status(RestApiStatusCodes.SUCCESS_201_CREATED).send(race);
             } catch (e) {
-                const err: ApiError = { name: 'InternalError', message: `Could not create race: ${e}` };
-                LOGGER.error(err.message, e);
+                const err: ApiError = { code: 'DatabaseError', short: `Could not create race`, detail: `${e}` };
+                LOGGER.error(err.short, e);
                 res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(err);
             }
         });
@@ -77,8 +77,8 @@ export class RaceApi {
                     res.status(RestApiStatusCodes.SUCCESS_200_OK).send(race);
                 }
             } catch (e) {
-                const err: ApiError = { name: 'InternalError', message: `Could not delete race: ${e}` };
-                LOGGER.error(err.message, e);
+                const err: ApiError = { code: 'DatabaseError', short: `Could not get race`, detail: `${e}` };
+                LOGGER.error(err.short, e);
                 res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(err);
             }
         });
@@ -92,8 +92,8 @@ export class RaceApi {
                 this.webSocketCtrl.broadcast({ path: '/api/races', body: races })
                 res.status(RestApiStatusCodes.SUCCESS_204_NO_CONTENT).send();
             } catch (e) {
-                const err: ApiError = { name: 'InternalError', message: `Could not delete race: ${e}` };
-                LOGGER.error(err.message, e);
+                const err: ApiError = { code: 'DatabaseError', short: `Could not delete race`, detail: `${e}` };
+                LOGGER.error(err.short, e);
                 res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(err);
             }
         });

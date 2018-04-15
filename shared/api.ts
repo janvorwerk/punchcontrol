@@ -1,11 +1,23 @@
-export type ApiErrorCode =
-    'DatabaseError' |
-    'InternalError' |
-    'ConcurrentModification';
+export const API_ERROR_CODES = {
+    'DatabaseError': 0,
+    'InternalError': 0,
+    'ConcurrentModification': 0,
+};
+export type ApiErrorCode = keyof typeof API_ERROR_CODES;
 
 export interface ApiError {
-    name: ApiErrorCode;
-    message: string;
+    code: ApiErrorCode;
+    short: string;
+    detail: string;
+}
+
+export function isApiError(err: any): err is ApiError {
+    const hasMembers = 'code' in err && 'short' in err && 'detail' in err;
+    if (!hasMembers) {
+        return false;
+    }
+    const isExpectedCode = err.code in API_ERROR_CODES;
+    return isExpectedCode;
 }
 
 export enum RestApiStatusCodes {
