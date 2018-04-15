@@ -10,6 +10,7 @@ import { delay, distinctUntilChanged, filter, map, shareReplay, tap } from 'rxjs
 import { LOGGING } from '../../util/logging';
 import { WebSocketService } from './websocket.service';
 import { WebSocketMessage } from '@punchcontrol/shared/websocket-dto';
+import { PatchDto } from '@punchcontrol/shared/patching';
 
 const LOGGER = LOGGING.getLogger('RacesService');
 
@@ -75,6 +76,20 @@ export class RacesService {
             if (msg.path === '/api/races') {
                 LOGGER.infoc(() => `Receiving websocket ${msg.path}`);
                 this._races.next(msg.body);
+            } else if (msg.path === '/api/generic/patch') {
+                const patches: PatchDto[] = msg.body;
+                for (const p of patches) {
+                    if (p.patchEl === 'Race#raceId.name') {
+                        const races = [...this._races.getValue()];
+                        races.map(r => {
+                            if (r.id === p.id) {
+                                r.name = p.newVal;
+                            }
+                            return r;
+                        });
+                        this._races.next(races);
+                    }
+                }
             }
         });
     }
@@ -104,7 +119,7 @@ export class RacesService {
         });
     }
     deleteRaces(ids: string[]): void {
-        ids.forEach( id => {
+        ids.forEach(id => {
             this.http.delete<void>(`/api/races/${id}`).subscribe(() => LOGGER.info(`Deleted race ${id}`));
         });
     }
