@@ -12,11 +12,12 @@
 >
     <thead>
         <tr> <!-- This row is for the background only: it spans all columns -->
-            <td [attr.colspan]="columns.length">
+            <td [attr.colspan]="columnsCount">
                 <div class="stickable full" [ngStyle]="{'top.px':top, 'width.px': tableWidth}"></div>
             </td>
         </tr>
         <tr>  <!-- This row is for the real headers -->
+            <th *ngIf="rowSelection"></th>
             <th *ngFor="let col of columns; index as c" [attr.data-col]="c" [ngClass]="{'selected': isColSelected(c)}">
                 <div class="stickable" [ngStyle]="{'top.px':top}"> <!-- only visible when scrolling out -->
                     <span class="header" (click)="sortColumn(c)">{{col.header}}</span>
@@ -29,6 +30,7 @@
     </thead>
     <tbody>
         <tr *ngFor="let row of data.displayRows; index as r" [attr.data-row]="r">
+            <td *ngIf="rowSelection"><input type="checkbox" [(ngModel)]="rowSelection[r]"></td> <!-- (click)="onRowCheckbox(r, $event.currentTarget.checked)" -->
             <td *ngFor="let td of getRow(r); index as c" [attr.data-col]="c" [ngClass]="{'selected': isSelected(r,c), 'readonly': !!columns[c].readonly}">
                 {{td}}
             </td>

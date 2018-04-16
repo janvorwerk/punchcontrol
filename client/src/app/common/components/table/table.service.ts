@@ -16,21 +16,17 @@ const LOGGER = LOGGING.getLogger('TableService');
 @Injectable()
 export class TableService {
     data: TableData | null = null;
-
+    rowSelection: boolean[] = [];
     private dataSubject = new ReplaySubject<TableData>(1);
-    // private tableSub: Subscription | null = null;
-    private subs = new Array<Subscription>();
 
     constructor(private websocketService: WebSocketService, private http: HttpClient) {
-        this.dataSubject.subscribe(t => this.data = t);
-        // this.subs.push(this.tableSub);
+        this.dataSubject.subscribe(t => {
+            this.data = t;
+            this.rowSelection = new Array<boolean>(t.rows.length).fill(false);
+        });
     }
 
     register(url: string, wsMessagePath?: string) {
-        // if (this.tableSub !== null) {
-        //     this.tableSub.unsubscribe();
-        //     this.subs = this.subs.filter(s => s !== this.tableSub);
-        // }
         this.http.get<TableData>(url).subscribe(data => this.dataSubject.next(data));
 
         this.websocketService.receive.subscribe((msg: WebSocketMessage) => {

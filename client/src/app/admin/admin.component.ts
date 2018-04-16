@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AppSettings } from '@punchcontrol/shared/app-settings';
 import { RaceDto } from '@punchcontrol/shared/race-dto';
 import { Subscription } from 'rxjs/Subscription';
-import { map } from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
 import { RacesService } from '../common/services/races.service';
 import { Theme, ThemeService } from '../common/services/theme.service';
 import { AdminService } from './admin.service';
@@ -20,7 +20,6 @@ export class AdminComponent implements OnInit, OnDestroy {
     selectedTheme: Theme;
     allThemes: Theme[];
     allRaces: RaceDto[];
-    private raceSelection: TableRange|null;
 
     private subs: Subscription[] = [];
     constructor(private themeService: ThemeService,
@@ -48,18 +47,16 @@ export class AdminComponent implements OnInit, OnDestroy {
     addRace() {
         this.racesService.createRace();
     }
-    onRaceSelection(selection: TableRange|null) {
-        this.raceSelection = selection;
-    }
     deleteRaces() {
-        if (this.raceSelection) {
-            const ids = [];
-            const col = this.t.data.columns.findIndex(c => c.id === 'raceId');
-            for (let r = this.raceSelection.startRow; r <= this.raceSelection.endRow; r++) {
-                const row = this.t.data.rows[r];
+        const ids = [];
+        const col = this.t.data.columns.findIndex(c => c.id === 'raceId');
+        this.t.rowSelection.forEach((isselected, rownum) => {
+            if (isselected) {
+                const row = this.t.data.rows[rownum];
                 ids.push(row[col]);
             }
-            this.racesService.deleteRaces(ids);
-        }
+        });
+        this.t.rowSelection.fill(false);
+        this.racesService.deleteRaces(ids);
     }
 }

@@ -111,12 +111,14 @@ function getTargetCell(event: Event): Element {
 })
 export class TableComponent implements OnInit, OnChanges, AfterViewInit, StickyScrollable {
     @Input() data: TableData;
+    @Input() rowSelection: boolean[];
+
     @Output() edit = new EventEmitter<CellValueChangeEvent>();
-    @Output() selection = new EventEmitter<TableRange|null>();
+
     sticky: boolean;
     top: number;
     tableWidth: number;
-    private _selectionRange: TableRange | null = null;
+    private selectionRange: TableRange | null = null;
     private selectionStart: CellRef | null = null;
     private editedCell: Element | null = null;
     /**
@@ -148,14 +150,6 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, StickyS
         });
     }
 
-    private set selectionRange(range: TableRange|null) {
-        this._selectionRange = range;
-        this.selection.emit(range);
-    }
-
-    private get selectionRange(): TableRange|null {
-        return this._selectionRange;
-    }
     ngOnInit() {
         this.bottomElem = this.elementRef.nativeElement.querySelector('.bottom');
     }
@@ -178,6 +172,9 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, StickyS
         return (this.bottomElem as any).offsetTop; // wrong typings
     }
 
+    get columnsCount(): number {
+        return this.columns.length + (this.rowSelection ? 1 : 0);
+    }
     @HostListener('window:resize')
     onResize(): void {
         const table = this.getTable();
@@ -198,7 +195,8 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, StickyS
         this.unEditCell(el);
         const col = parseInt(el.getAttribute('data-col'), 10);
         if (isNaN(col)) {
-            LOGGER.warnc(() => `Could not find data-col attr (target is ${event.target}`);
+            // can happen on row selection
+            LOGGER.tracec(() => `Could not find data-col attr (target is ${event.target}`);
             return;
         }
         if (el.tagName === 'TH') {
@@ -231,7 +229,8 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, StickyS
         }
         const col = parseInt(el.getAttribute('data-col'), 10);
         if (isNaN(col)) {
-            LOGGER.warnc(() => `Could not find data-col attr (target is ${event.target}`);
+            // can happen on row selection
+            LOGGER.tracec(() => `Could not find data-col attr (target is ${event.target}`);
             return;
         }
         let newSelectionRange: TableRange;
