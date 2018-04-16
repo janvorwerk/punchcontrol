@@ -12,9 +12,6 @@ thead {
         background-color: saturate($headerColor, 50%);
     }
 }
-td[contenteditable=true] {
-    background-color: white;
-}
 .stickable {
     position: fixed;
 }
@@ -51,5 +48,8 @@ tbody {
     td {
         padding: 2px;
         border: 1px solid lighten($headerColor, 10%);
+        &[contenteditable=true] {
+            background-color: white;
+        }
     }
 }

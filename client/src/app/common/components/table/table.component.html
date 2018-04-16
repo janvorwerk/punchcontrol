@@ -6,7 +6,8 @@
 
     (dblclick)="onDoubleClick($event)"
     (keypress)="onKeyPress($event)"
-    (keyup.escape)="onDiscardEdit   ($event)"
+    (focusout)="onFocusOut()"
+    (keyup.escape)="onDiscardEdit($event)"
 
     (copy)="onCopy($event)"
 >

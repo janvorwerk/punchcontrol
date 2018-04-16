@@ -255,6 +255,8 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, StickyS
         const isSameCell = this.editedCell === selectedElem;
         if (!isSameCell && this.editedCell != null) {
             (this.editedCell as any).contentEditable = false;
+            // validate content by default
+            this.validateEdit();
             this.editedCell = null;
         }
         return isSameCell;
@@ -292,16 +294,32 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, StickyS
         this.unEditCell();
     }
 
+
+    /**
+     * We use 'focusout' because it bubbles up to the table while 'blur' does not
+     */
+    onFocusOut() {
+        this.validateEdit();
+        this.unEditCell();
+    }
+
+    /**
+     * We use 'keypress' so that there is no carriage return typed in the UI
+     * @param event the keyboard
+     */
     onKeyPress(event: KeyboardEvent) {
         const handleEvent = ['Enter'].includes(event.key);
         if (handleEvent) {
             event.preventDefault();
-            const el = getTargetCell(event);
-            if (!el || el.tagName === 'TH') {
-                return;
-            }
-            const col = parseInt(el.getAttribute('data-col'), 10);
-            const row = parseInt(el.parentElement.getAttribute('data-row'), 10);
+            this.validateEdit();
+            this.unEditCell();
+        }
+    }
+
+    private validateEdit() {
+        if (this.editedCell) {
+            const col = parseInt(this.editedCell.getAttribute('data-col'), 10);
+            const row = parseInt(this.editedCell.parentElement.getAttribute('data-row'), 10);
             if (isNaN(col) || isNaN(row)) {
                 LOGGER.warnc(() => `Could not find col-row attributes ${col}-${row} (target is ${event.target}`);
                 return;
@@ -309,15 +327,10 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, StickyS
             const realRow = this.data.displayRows[row];
             const oldValue = this.data.rows[realRow][col];
 
-            if (event.key === 'Enter') {
-                const newValue = (el as any).innerText;
-                if (oldValue !== newValue) {
-                    this.edit.next({ row: realRow, col, oldValue, newValue });
-                }
-            } else if (event.key === 'Escape') {
-                el.innerHTML = `${oldValue}`; // FIXME format properly (dates, numbers etc...)
+            const newValue = (this.editedCell as any).innerText;
+            if (oldValue !== newValue) {
+                this.edit.next({ row: realRow, col, oldValue, newValue });
             }
-            this.unEditCell();
         }
     }
 
