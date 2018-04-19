@@ -9,6 +9,7 @@ import {
     PrimaryGeneratedColumn
     } from 'typeorm';
 import { CourseControl } from './course_control';
+import { Race } from './race';
 
 
 @Entity()
@@ -30,6 +31,8 @@ export class Control {
     })
     controlType: string;
 
+    @ManyToOne(type => Race, race => race.controls, { onDelete: 'CASCADE' })
+    race: Race;
 
     @Column("int", {
         nullable: false,

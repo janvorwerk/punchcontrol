@@ -11,6 +11,7 @@ import { PersonResult } from './person_result';
 import { RacingEvent } from './racing_event';
 import { Team } from './team';
 import { TeamClass } from './team_class';
+import { Control } from './control';
 
 
 @Entity()
@@ -66,6 +67,9 @@ export class Race {
     @OneToMany(type => PersonResult, personResults => personResults.race)
     personResults: PersonResult[];
 
+
+    @OneToMany(type => Control, control => control.race)
+    controls: Control[];
 
 
     @OneToMany(type => TeamClass, teamClasses => teamClasses.race)

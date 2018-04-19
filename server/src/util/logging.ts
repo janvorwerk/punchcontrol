@@ -39,7 +39,7 @@ class CustomLogger extends ConsoleLoggerImpl {
 
 class MyLoggerFactory {
     logStream: fs.WriteStream;
-    private factory: LoggerFactory;
+    private _factory: LoggerFactory;
 
     initialize(logLevel: LogLevel, rootPath: string, toConsole: boolean) {
         const logsFolder = path.join(rootPath, 'logs');
@@ -64,7 +64,26 @@ class MyLoggerFactory {
                 }
             )
         );
-        this.factory = LFService.createNamedLoggerFactory('LoggerFactory', options);
+        this._factory = LFService.createNamedLoggerFactory('LoggerFactory', options);
+    }
+    get factory() {
+        if (this._factory) {
+            return this._factory;
+        } else {
+            // This is to be able to call LOGGER w/o prior initialization
+            // for instance while starting a module out of the app
+            const options = new LoggerFactoryOptions();
+
+            options.addLogGroupRule(
+                new LogGroupRule(
+                    new RegExp('.+'),
+                    LogLevel.Info,
+                    new LogFormat(),
+                    LoggerType.Console
+                )
+            );
+            return LFService.createNamedLoggerFactory('LoggerFactory', options);
+        }
     }
     getLogger(fullPath: string) {
         const basename = path.basename(fullPath, '.js');

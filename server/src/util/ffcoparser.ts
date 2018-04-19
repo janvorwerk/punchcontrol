@@ -18,8 +18,7 @@ import { TeamMember } from '../entities/team_member';
 import { TeamMemberClass } from '../entities/team_member_class';
 import { LOGGING } from './logging';
 
-const LOGGER = LOGGING.
-getLogger(__filename);
+const LOGGER = LOGGING.getLogger(__filename);
 
 class FfcoUtils {
     private static readonly CENTURY_SWAP_YEAR = new Date().getFullYear() - 2000;
@@ -177,16 +176,3 @@ export async function importFccoRegistrationCsv(raceId: number, connection: Conn
     });
     return importedRunners
 }
-
-// /** for testing */
-// async function main(targetRaceId: number, filename: string) {
-//     const connection = await openDatabase();
-//     const content = await util.promisify(fs.readFile)(filename, 'latin1');
-//     await importFccoRegistrationCsv(connection, content);
-// }
-
-// if (!module.parent) { // only if running this module for testing
-//     main(1, '/home/jan/code/punchcontrol/_sampledata/inscriptions1316.csv')
-//         .then(() => LOGGER.info(`Done`))
-//         .catch((err: Error) => LOGGER.error(err));
-// }

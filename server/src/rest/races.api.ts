@@ -10,6 +10,7 @@ import { readRequest } from '../util/http-util';
 import { LOGGING } from '../util/logging';
 import { GenericApi } from './generic.api';
 import { WebSocketController } from '../startup/websocket.controller';
+import { importIOFxml3Courses } from '../util/iof3_course_parser';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -29,11 +30,27 @@ export class RaceApi {
 
                 req.setEncoding('latin1'); // FIXME, this should be in the headers
                 const content = await readRequest(req);
-                const importedRunnersCount = await importFccoRegistrationCsv(raceId, this.databaseCtrl.connection, content);
+                const importedRunnersCount = await importFccoRegistrationCsv(raceId, this.databaseCtrl.connection, content.toString());
                 LOGGER.info(`Imported ${importedRunnersCount} runners OK`);
                 res.status(RestApiStatusCodes.SUCCESS_200_OK).send({ importedRunnersCount });
             } catch (e) {
-                const err: ApiError = { code: 'DatabaseError', short: `Could not import file`, detail: `${e}` };
+                const err: ApiError = { code: 'DatabaseError', short: `Could not import registration file`, detail: `${e}` };
+                LOGGER.error(err.short, e);
+                res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(err);
+            }
+        });
+
+        app.post('/api/races/:raceId/courses', async (req, res) => {
+            // FIXME: check the Content-Type to see if we upload a file or create a single registration
+            try {
+                const raceId = parseInt(req.params.raceId)
+                req.setEncoding('utf8'); // FIXME, this should be in the headers
+                const content = await readRequest(req);
+                const importedCoursesCount = await importIOFxml3Courses(raceId, this.databaseCtrl.connection, content);
+                LOGGER.info(`Imported ${importedCoursesCount} courses OK`);
+                res.status(RestApiStatusCodes.SUCCESS_200_OK).send({ importedCoursesCount });
+            } catch (e) {
+                const err: ApiError = { code: 'DatabaseError', short: `Could not import courses file`, detail: `${e}` };
                 LOGGER.error(err.short, e);
                 res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(err);
             }

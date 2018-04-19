@@ -97,8 +97,19 @@ export class RacesService {
 
     upload(raceId: number, files: File[]): void {
         for (let i = 0; i < files.length; i++) {
-            LOGGER.infoc(() => `File ${i}: '${files[i].name}' (${files[i].size} bytes)`);
+            LOGGER.infoc(() => `Registration file ${i}: '${files[i].name}' (${files[i].size} bytes)`);
             this.http.post(`/api/races/${raceId}/registration`, files[i]).subscribe((r) => {
+                LOGGER.infoc(() => `File '${files[i].name}' uploaded`);
+            }, (err) => {
+                LOGGER.error(`Could not upload '${files[i].name}' ${err}`);
+            });
+        }
+    }
+
+    uploadCourses(raceId: number, files: File[]): void {
+        for (let i = 0; i < files.length; i++) {
+            LOGGER.infoc(() => `Courses file ${i}: '${files[i].name}' (${files[i].size} bytes)`);
+            this.http.post(`/api/races/${raceId}/courses`, files[i]).subscribe((r) => {
                 LOGGER.infoc(() => `File '${files[i].name}' uploaded`);
             }, (err) => {
                 LOGGER.error(`Could not upload '${files[i].name}' ${err}`);
