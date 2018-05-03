@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Race } from './race';
 
+export type Sex = 'M' | 'F' | 'M|F';
 
 @Entity()
 export class IndividualClass {
@@ -34,7 +35,7 @@ export class IndividualClass {
     @Column("text", {
         nullable: false,
     })
-    allowedSex: string;
+    allowedSex: Sex;
 
 
     @Column("int", {

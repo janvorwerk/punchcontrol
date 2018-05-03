@@ -7,8 +7,9 @@
     <app-file-select label="Drop registration file here" (select)="uploadCourses($event)"></app-file-select>
 </section>
 <section>
-    <legend>Categories</legend>
-    <div class="help">Configure the race categories</div>
+    <legend>Classes</legend>
+    <div class="help">Configure the race classes</div>
+    <button (click)="generateFfcoClasses()">Generate FFCO classes</button>
 </section>
 <section>
     <legend>Distribution</legend>

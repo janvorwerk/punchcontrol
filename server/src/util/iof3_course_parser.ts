@@ -12,8 +12,8 @@ import { LOGGING } from './logging';
 const LOGGER = LOGGING.getLogger(__filename);
 
 // ========== GENERATED CLASSES ======
-// FIXME: those classes are not generated from the XSD but from a sample
-// investigate https://github.com/charto/cxsd to use the XSD!
+// Those classes are not generated from the XSD but from a sample
+// (could not find a decent/alive XML parsing lib using the XSD!)
 interface IofV3Data {
     CourseData: IofCourseData;
 }

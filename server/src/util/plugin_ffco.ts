@@ -17,8 +17,17 @@ import { TeamClass } from '../entities/team_class';
 import { TeamMember } from '../entities/team_member';
 import { TeamMemberClass } from '../entities/team_member_class';
 import { LOGGING } from './logging';
+import { Sex, IndividualClass } from '../entities/individual_class';
 
 const LOGGER = LOGGING.getLogger(__filename);
+
+// Despite its name, this is not (yet!) a plugin...
+
+
+const SEXES: { [x: string]: Sex } = {
+    H: 'M',
+    D: 'F'
+}
 
 class FfcoUtils {
     private static readonly CENTURY_SWAP_YEAR = new Date().getFullYear() - 2000;
@@ -32,14 +41,12 @@ class FfcoUtils {
         }
         return year;
     }
-    static getSex(fr: string) {
-        return fr === 'H' ? 'M' : 'F';
-    }
 }
 
 class DatabaseWriter {
     private race: Race | undefined;
     private readonly organisations: Map<string, Organisation> = new Map();
+    private readonly indivClasses: Map<string, IndividualClass> = new Map();
     private readonly teamClasses: Map<string, TeamClass> = new Map();
 
     constructor(private em: EntityManager, private data: string[][]) {
@@ -49,17 +56,25 @@ class DatabaseWriter {
         this.race = races[0];
     }
     async storeRelay(): Promise<number> {
-        await this.storeOrganisations();
+        await this.storeOrganisations(8, 9);
         await this.storeTeamClasses();
         return await this.storeTeamsAndPersons();
     }
     async storeIndividual(): Promise<number> {
+        await this.storeOrganisations(14, 15);
+        await this.loadIndivClasses();
         throw new Error('not implemented');
     }
+    private async loadIndivClasses() {
+        let indivClasses = await this.em.find(IndividualClass);
+        for (let indivClass of indivClasses) {
+            this.indivClasses.set(indivClass.shortName, indivClass);
+        }
+    }
 
-    private async storeOrganisations() {
+    private async storeOrganisations(shortNameCol: number, nameCol: number) {
         LOGGER.info(`Storing Organisation...`);
-        let tmp = this.data.map(fields => [fields[8], fields[9]] as [string, string]);
+        let tmp = this.data.map(fields => [fields[shortNameCol], fields[nameCol]] as [string, string]);
         const orgs = new Map<string, string>(Array.from(tmp));
         const repoOrganisation = this.em.getRepository(Organisation);
         for (const [shortName, name] of orgs) {
@@ -134,7 +149,7 @@ class DatabaseWriter {
                         lastName: lastName,
                         firstName: fields[24 + 11 * i],
                         birthYear: FfcoUtils.getBirthYear(fields[25 + 11 * i]),
-                        sex: FfcoUtils.getSex(fields[26 + 11 * i]),
+                        sex: SEXES[fields[26 + 11 * i]],
                         ecard: fields[31 + 11 * i],
                         externalKey: fields[33 + 11 * i],
                     });
@@ -158,11 +173,55 @@ class DatabaseWriter {
     }
 }
 
+async function generateOneClass(em: EntityManager, race: Race, sex: Sex, minAge: number, maxAge: number, shortName: string, longName: string = shortName): Promise<void> {
+    let indivClass = em.create(IndividualClass, {
+        shortName: shortName,
+        race: race
+    });
+    indivClass = await em.findOne(IndividualClass, indivClass) || indivClass;
+    // update fields as required
+    indivClass.allowedSex = sex;
+    indivClass.minAge = minAge;
+    indivClass.maxAge = maxAge;
+    indivClass.name = longName;
+    await em.save(IndividualClass, indivClass);
+}
 
-export async function importFccoRegistrationCsv(raceId: number, connection: Connection, csvContent: string): Promise<number> {
+export async function generateFfcoClasses(raceId: number, connection: Connection): Promise<number> {
+    return await connection.transaction(async em => {
+        const races = await em.findByIds(Race, [raceId]);
+        const race = races[0];
+        let generatedCount = 0;
+        for (let sex of Object.keys(SEXES)) {
+            let ages = [10, 12, 14, 16, 18, 20];
+            for (let index = 0; index < ages.length; index++) {
+                const minAge = index === 0 ? 0 : ages[index - 1] + 1;
+                const maxAge = ages[index];
+                const shortName = `${sex}${maxAge}`;
+                await generateOneClass(em, race, SEXES[sex], minAge, maxAge, shortName);
+                generatedCount++;
+            }
+            ages = [21, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80];
+            for (let index = 0; index < ages.length; index++) {
+                const minAge = ages[index];
+                const maxAge = index === ages.length - 1 ? 1000 : ages[index + 1] - 1;;
+                const shortName = `${sex}${minAge}`;
+                await generateOneClass(em, race, SEXES[sex], minAge, maxAge, shortName);
+                generatedCount++;
+            }
+        }
+        return generatedCount;
+    });
+}
+
+export async function importFfcoRegistrationCsv(raceId: number, connection: Connection, csvContent: string): Promise<number> {
     const parseAsync = util.promisify<string, csvparse.Options, string[][]>(csvparse);
     const data = await parseAsync(csvContent, { delimiter: ';', rowDelimiter: '\r\n', relax_column_count: true });
     const headers = data[0];
+    const isFfco = headers[0] === 'N° dép.';
+    if (!isFfco) {
+        throw new Error('Invalid file format');
+    }
     const isRelay = headers[14] === 'Relayeurs';
 
     const importedRunners = await connection.transaction(async transactionalEntityManager => {

@@ -5,12 +5,12 @@ import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { DatabaseController } from '../db/database.controller';
 import { Race } from '../entities/race';
 import { RacingEvent } from '../entities/racing_event';
-import { importFccoRegistrationCsv } from '../util/ffcoparser';
+import { WebSocketController } from '../startup/websocket.controller';
 import { readRequest } from '../util/http-util';
+import { importIOFxml3Courses } from '../util/iof3_course_parser';
 import { LOGGING } from '../util/logging';
 import { GenericApi } from './generic.api';
-import { WebSocketController } from '../startup/websocket.controller';
-import { importIOFxml3Courses } from '../util/iof3_course_parser';
+import { importFfcoRegistrationCsv, generateFfcoClasses } from '../util/plugin_ffco';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -30,7 +30,7 @@ export class RaceApi {
 
                 req.setEncoding('latin1'); // FIXME, this should be in the headers
                 const content = await readRequest(req);
-                const importedRunnersCount = await importFccoRegistrationCsv(raceId, this.databaseCtrl.connection, content.toString());
+                const importedRunnersCount = await importFfcoRegistrationCsv(raceId, this.databaseCtrl.connection, content.toString());
                 LOGGER.info(`Imported ${importedRunnersCount} runners OK`);
                 res.status(RestApiStatusCodes.SUCCESS_200_OK).send({ importedRunnersCount });
             } catch (e) {
@@ -51,6 +51,18 @@ export class RaceApi {
                 res.status(RestApiStatusCodes.SUCCESS_200_OK).send({ importedCoursesCount });
             } catch (e) {
                 const err: ApiError = { code: 'DatabaseError', short: `Could not import courses file`, detail: `${e}` };
+                LOGGER.error(err.short, e);
+                res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(err);
+            }
+        });
+
+        app.post('/api/races/:raceId/classes/generate', async (req, res) => {
+            try {
+                const raceId = parseInt(req.params.raceId);
+                const generatedClassesCount = await generateFfcoClasses(raceId, this.databaseCtrl.connection);
+                res.status(RestApiStatusCodes.SUCCESS_200_OK).send({generatedClassesCount});
+            } catch (e) {
+                const err: ApiError = { code: 'DatabaseError', short: `Could not generate classes`, detail: `${e}` };
                 LOGGER.error(err.short, e);
                 res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(err);
             }

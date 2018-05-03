@@ -9,6 +9,7 @@ import {
 import { CourseFamily } from './course_family';
 import { TeamClass } from './team_class';
 import { TeamMember } from './team_member';
+import { Sex } from './individual_class';
 
 
 @Entity()
@@ -39,7 +40,7 @@ export class TeamMemberClass {
     @Column("text", {
         nullable: false,
     })
-    allowedSex: string;
+    allowedSex: Sex;
 
 
     @Column("int", {

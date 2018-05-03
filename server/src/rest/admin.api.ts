@@ -1,22 +1,10 @@
-import { PatchDto } from '@punchcontrol/shared/patching';
-import { PATCH_EL_RE, QUERY_EL_RE } from '@punchcontrol/shared/patching';
-import { PersonDto } from '@punchcontrol/shared/person-dto';
-import { CellType, ColumnDefinition, TableData } from '@punchcontrol/shared/table-data';
-import { TeamMemberDto } from '@punchcontrol/shared/team-member-dto';
-import { Request, Response } from 'express';
+import { ApiError, RestApiStatusCodes } from '@punchcontrol/shared/api';
+import { Application, Request, Response } from 'express';
 import { Service } from 'typedi';
-import { Connection } from 'typeorm';
-import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { DatabaseController } from '../db/database.controller';
-import { Race } from '../entities/race';
-import { TeamMember } from '../entities/team_member';
-import { ExpressController } from '../startup/express.controller';
-import { importFccoRegistrationCsv } from '../util/ffcoparser';
+import { SettingsController } from '../startup/settings.controller';
 import { WebSocketController } from '../startup/websocket.controller';
 import { LOGGING } from '../util/logging';
-import { ApiError, RestApiStatusCodes } from '@punchcontrol/shared/api';
-import { SettingsController } from '../startup/settings.controller';
-import { Application } from 'express';
 
 const LOGGER = LOGGING.getLogger(__filename);
 

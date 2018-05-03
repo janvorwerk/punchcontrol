@@ -16,7 +16,6 @@ const LOGGER = LOGGING.getLogger('RacesService');
 
 @Injectable()
 export class RacesService {
-
     races: Observable<{ races: RaceDto[]; selectedRaceId: number; enabled: boolean }>;
 
     private _races = new BehaviorSubject<RaceDto[]>([]);
@@ -132,6 +131,13 @@ export class RacesService {
     deleteRaces(ids: string[]): void {
         ids.forEach(id => {
             this.http.delete<void>(`/api/races/${id}`).subscribe(() => LOGGER.info(`Deleted race ${id}`));
+        });
+    }
+    generateFfcoClasses(raceId: number): void {
+        this.http.post(`/api/races/${raceId}/classes/generate`, {}).subscribe((r) => {
+            LOGGER.infoc(() => `Generated`);
+        }, (err) => {
+            LOGGER.error(`Could not generate classes' ${err}`);
         });
     }
 }
