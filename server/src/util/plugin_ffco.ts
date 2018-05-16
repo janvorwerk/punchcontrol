@@ -18,6 +18,8 @@ import { TeamMember } from '../entities/team_member';
 import { TeamMemberClass } from '../entities/team_member_class';
 import { LOGGING } from './logging';
 import { Sex, IndividualClass } from '../entities/individual_class';
+import { CourseFamily } from '../entities/course_family';
+import { IndividualRegistration } from '../entities/individual_registration';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -26,7 +28,8 @@ const LOGGER = LOGGING.getLogger(__filename);
 
 const SEXES: { [x: string]: Sex } = {
     H: 'M',
-    F: 'F'
+    F: 'F', // women are sometimes D and sometimes F
+    D: 'F'
 }
 
 class FfcoUtils {
@@ -63,11 +66,12 @@ class DatabaseWriter {
     async storeIndividual(): Promise<number> {
         await this.storeOrganisations(14, 15);
         await this.loadIndivClasses();
-        throw new Error('not implemented');
+        return await this.storeIndividualRegistrations();
     }
     private async loadIndivClasses() {
         let indivClasses = await this.em.find(IndividualClass);
         for (let indivClass of indivClasses) {
+            LOGGER.info(`Found indiv class ${indivClass.shortName}...`);
             this.indivClasses.set(indivClass.shortName, indivClass);
         }
     }
@@ -118,6 +122,40 @@ class DatabaseWriter {
                 tmClass = await this.em.findOne(TeamMemberClass, tmClass) || await this.em.save(TeamMemberClass, tmClass);
             }
         }
+    }
+    private async storeIndividualRegistrations(): Promise<number> {
+        LOGGER.info(`Storing Team & TeamMember & Person...`);
+        let runnersCount = 0;
+        for (let fields of this.data) {
+            let person = this.em.create(Person, {
+                lastName: fields[3],
+                firstName: fields[4],
+                birthYear: FfcoUtils.getBirthYear(fields[5]),
+                sex: SEXES[fields[6]],
+                ecard: fields[1],
+                externalKey: fields[2],
+            });
+            person = await this.em.findOne(Person, person) || await this.em.save(person);
+
+
+            const classShortName = fields[18];
+            const indivClass = this.indivClasses.get(classShortName);
+            let courseFamily: CourseFamily|undefined = undefined;
+
+            if (!indivClass) {
+                // column must be a course name
+                const courseFamRepo = this.em.getRepository(CourseFamily);
+                courseFamily = await courseFamRepo.create({name: classShortName, race: this.race});
+                courseFamily = await courseFamRepo.findOne(courseFamily) || await courseFamRepo.save(courseFamily);
+            } else {
+                // column is the real class name
+            }
+            const registrationRepo = this.em.getRepository(IndividualRegistration);
+            let reg  = await registrationRepo.create({person, individualClass: indivClass, courseFamily});
+            reg =  await registrationRepo.save(reg);
+            runnersCount++;
+        }
+        return runnersCount;
     }
 
     private async storeTeamsAndPersons(): Promise<number> {
@@ -192,7 +230,7 @@ export async function generateFfcoClasses(raceId: number, connection: Connection
         const races = await em.findByIds(Race, [raceId]);
         const race = races[0];
         let generatedCount = 0;
-        for (let sex of Object.keys(SEXES)) {
+        for (let sex of ['H', 'D']) {
             let ages = [10, 12, 14, 16, 18, 20];
             for (let index = 0; index < ages.length; index++) {
                 const minAge = index === 0 ? 0 : ages[index - 1] + 1;

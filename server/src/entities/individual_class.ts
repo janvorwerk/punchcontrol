@@ -1,14 +1,7 @@
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { AllowedClassCourse } from './allowed_class_course';
-import {
-    Column,
-    Entity,
-    Index,
-    ManyToOne,
-    OneToMany,
-    PrimaryColumn,
-    PrimaryGeneratedColumn
-} from 'typeorm';
 import { Race } from './race';
+import { IndividualRegistration } from './individual_registration';
 
 export type Sex = 'M' | 'F' | 'M|F';
 
@@ -53,9 +46,6 @@ export class IndividualClass {
     @ManyToOne(type => Race, race => race.individualClasses, {onDelete: 'CASCADE'})
     race: Race;
 
-
-
-    @OneToMany(type => AllowedClassCourse, allowedClassCourse => allowedClassCourse.individualClass)
-    allowedClassCourses: AllowedClassCourse[];
-
+    @OneToMany(type => AllowedClassCourse, individualRegistration => individualRegistration.individualClass)
+    individualRegistrations: IndividualRegistration[];
 }

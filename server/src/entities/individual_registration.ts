@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 import { Person } from './person';
 import { CourseFamily } from './course_family';
+import { IndividualClass } from './individual_class';
 
 
 @Entity()
@@ -31,10 +32,8 @@ export class IndividualRegistration {
     @ManyToOne(type => Person, person => person.individualRegistrations, { onDelete: 'CASCADE' })
     person: Person;
 
-
-
-    @ManyToOne(type => AllowedClassCourse, individualClass => individualClass.individualRegistrations)
-    individualClass: AllowedClassCourse;
+    @ManyToOne(type => IndividualClass, individualClass => individualClass.individualRegistrations)
+    individualClass: IndividualClass;
 
 
     @ManyToOne(type => CourseFamily, courseFamily => courseFamily.individualRegistrations)
