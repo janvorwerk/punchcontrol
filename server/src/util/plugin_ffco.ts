@@ -26,7 +26,7 @@ const LOGGER = LOGGING.getLogger(__filename);
 
 const SEXES: { [x: string]: Sex } = {
     H: 'M',
-    D: 'F'
+    F: 'F'
 }
 
 class FfcoUtils {
