@@ -70,8 +70,9 @@ class DatabaseWriter {
     }
     private async loadIndivClasses() {
         let indivClasses = await this.em.find(IndividualClass);
+        // FIXME: only load classes for the selected race!
         for (let indivClass of indivClasses) {
-            LOGGER.info(`Found indiv class ${indivClass.shortName}...`);
+            LOGGER.debug(`Found indiv class ${indivClass.shortName}...`);
             this.indivClasses.set(indivClass.shortName, indivClass);
         }
     }
@@ -126,6 +127,7 @@ class DatabaseWriter {
     private async storeIndividualRegistrations(): Promise<number> {
         LOGGER.info(`Storing Team & TeamMember & Person...`);
         let runnersCount = 0;
+        const currentYear = (new Date()).getFullYear();
         for (let fields of this.data) {
             let person = this.em.create(Person, {
                 lastName: fields[3],
@@ -139,16 +141,32 @@ class DatabaseWriter {
 
 
             const classShortName = fields[18];
-            const indivClass = this.indivClasses.get(classShortName);
+            let indivClass = this.indivClasses.get(classShortName);
             let courseFamily: CourseFamily|undefined = undefined;
 
             if (!indivClass) {
-                // column must be a course name
+                // column must be a course name, we do not want to lose that data!
                 const courseFamRepo = this.em.getRepository(CourseFamily);
                 courseFamily = await courseFamRepo.create({name: classShortName, race: this.race});
                 courseFamily = await courseFamRepo.findOne(courseFamily) || await courseFamRepo.save(courseFamily);
-            } else {
-                // column is the real class name
+
+                // We use the class based on the sex & age...
+                // FIXME: we should be looking in runners archive first because
+                // some runners are overclassed for the whole year
+                // only for runners not in the archive, we'd default to this computation
+
+                // This is how the FFCO computes ages so that it does not change
+                // in the middle of the season.
+                const age = currentYear - person.birthYear;
+                const matchingClasses = [...this.indivClasses.values()].filter(
+                    cl => cl.allowedSex.indexOf(person.sex) !== -1 && 
+                    age >= cl.minAge &&
+                    age <= cl.maxAge 
+                );
+                if (matchingClasses.length === 0) {
+                    throw new Error(`Could not determine an individual class for ${person.firstName} ${person.lastName}`);
+                }
+                indivClass = matchingClasses[0];
             }
             const registrationRepo = this.em.getRepository(IndividualRegistration);
             let reg  = await registrationRepo.create({person, individualClass: indivClass, courseFamily});

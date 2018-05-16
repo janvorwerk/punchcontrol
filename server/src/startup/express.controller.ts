@@ -13,6 +13,7 @@ import { GenericApi } from '../rest/generic.api';
 import { RaceApi } from '../rest/races.api';
 import { TeamApi } from '../rest/team.api';
 import { WebSocketController } from './websocket.controller';
+import { RunnersApi } from '../rest/runners.api';
 
 const LOGGER = LOGGING.getLogger(__filename);
 
@@ -32,6 +33,7 @@ export class ExpressController {
         private genericApi: GenericApi,
         private raceApi: RaceApi,
         private teamApi: TeamApi,
+        private runnersApi: RunnersApi,
         private webSocketCtrl: WebSocketController
     ) {
     }
@@ -78,6 +80,7 @@ export class ExpressController {
         this.adminApi.registerHandlers(this.app);
         this.genericApi.registerHandlers(this.app);
         this.raceApi.registerHandlers(this.app);
+        this.runnersApi.registerHandlers(this.app);
         this.teamApi.registerHandlers(this.app);
 
         // filter to respond with root html page for HTML5 push-state URLs

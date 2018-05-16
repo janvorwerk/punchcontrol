@@ -116,7 +116,7 @@ export class GenericApi {
     }
 }
 
-export type QueryRoot = 'TeamMember' | 'Races'; // add more when other roots are created
+export type QueryRoot = 'TeamMember' | 'Races' | 'Runners'; // add more when other roots are created
 
 const ALL_COLUMNS: Map<QueryRoot, ColumnDefinition[]> = new Map();
 ALL_COLUMNS.set('TeamMember', [
@@ -217,3 +217,61 @@ ALL_COLUMNS.set('Races', [
         hidden: true
     }
 ]);
+
+ALL_COLUMNS.set('Runners', [
+    {
+        header: 'First name',
+        id: 'firstName',
+        el: 'IndividualRegistration.person>person.firstName',
+        patchEl: 'Person#personId.firstName',
+    },
+    {
+        header: 'Last name',
+        id: 'lastName',
+        el: 'IndividualRegistration.person>person.lastName',
+        patchEl: 'Person#personId.lastName',
+    },
+    {
+        id: 'personId',
+        el: 'IndividualRegistration.person>person.id',
+        readonly: true,
+        hidden: true
+    },
+    {
+        header: 'Sex',
+        id: 'sex',
+        el: 'IndividualRegistration.person>person.sex',
+        patchEl: 'Person#personId.sex',
+    },
+    {
+        header: 'E-card',
+        id: 'ecard',
+        el: 'IndividualRegistration.person>person.ecard',
+        patchEl: 'Person#personId.ecard',
+        cellType: CellType.INTEGER
+    },
+    {
+        header: 'Class',
+        id: 'class',
+        el: 'IndividualRegistration.individualClass>individualClass.shortName',
+    },
+    {
+        header: 'Course',
+        id: 'course',
+        el: 'IndividualRegistration.courseFamily>courseFamily.name',
+    },
+    {
+        header: 'Race id',
+        id: 'raceId',
+        el: 'IndividualRegistration.individualClass>individualClass.race_id',
+        readonly: true,
+        hidden: true
+    },
+    {
+        header: 'External key',
+        id: 'externalKey',
+        el: 'IndividualRegistration.person>person.externalKey',
+        patchEl: 'Person#personId.externalKey',
+        readonly: true,
+        cellType: CellType.INTEGER
+    },]);

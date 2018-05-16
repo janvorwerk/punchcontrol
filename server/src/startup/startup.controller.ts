@@ -25,6 +25,10 @@ class StartupController {
         // Init settings first so that other can use
         await this.settingsCtrl.initialize(appFolder);
 
+        // FIXME: how do I update the log level for all loggers?
+        // this.settingsCtrl.logLevel;
+        // LOGGER.
+
         if (options.dev) {
             // in dev mode, we need to open the latest DB on startup
             // so that live reload is functional, otherwise the

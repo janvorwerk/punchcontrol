@@ -12,7 +12,8 @@ const DEFAULT_SETTINGS: AppSettings = {
     mode: 'STANDALONE',
     recentDatabases: [],
     recentMasters: [],
-    chipReaders: []
+    chipReaders: [],
+    logLevel: 'Info'
 }
 
 @Service()
@@ -50,6 +51,8 @@ export class SettingsController {
 
     get mode() { return this.settings.mode }
     set mode(mode: AppMode) { this.settings.mode = mode; this.rec() }
+
+    get logLevel() { return this.settings.logLevel }
 
     // get recentMasters() { return this.settings.recentMasters }
     addMaster(path: string) {

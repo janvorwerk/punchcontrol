@@ -1,3 +1,4 @@
 <p>
     Runners for race {{raceId | async}}
 </p>
+<app-table *ngIf="t.data" [data]="t.data" (edit)="t.onEdit($event)"></app-table>
