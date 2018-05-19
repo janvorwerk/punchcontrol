@@ -22,9 +22,6 @@ export class RaceComponent implements OnInit {
     uploadRegistration(files: File[]) {
         this.raceService.upload(this.raceId, files);
     }
-    uploadCourses(files: File[]) {
-        this.raceService.uploadCourses(this.raceId, files);
-    }
     generateFfcoClasses() {
         this.raceService.generateFfcoClasses(this.raceId);
     }

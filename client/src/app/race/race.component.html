@@ -3,8 +3,7 @@
 </p>
 <section>
     <legend>Courses</legend>
-    <div class="help">Configure the race courses</div>
-    <app-file-select label="Drop courses file here" (select)="uploadCourses($event)"></app-file-select>
+    <app-race-courses [raceId]="raceId"></app-race-courses>
 </section>
 <section>
     <legend>Classes</legend>

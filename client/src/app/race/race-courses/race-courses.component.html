@@ -1,0 +1,3 @@
+<div class="help">Configure the race courses</div>
+<app-file-select label="Drop courses file here" (select)="uploadCourses($event)"></app-file-select>
+<app-table *ngIf="t.data" [data]="t.data" (edit)="t.onEdit($event)"></app-table>

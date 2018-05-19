@@ -36,6 +36,7 @@ import { BasepathInterceptor } from './common/interceptors/basepath.interceptor'
 import { NotificationComponent } from './common/components/notification/notification.component';
 import { NotificationService } from './common/components/notification/notification.service';
 import { ErrorInterceptor } from './common/interceptors/error.interceptor';
+import { RaceCoursesComponent } from './race/race-courses/race-courses.component';
 
 const appRoutes: Routes = [
     { path: 'register', component: RegisterComponent },
@@ -77,6 +78,7 @@ const appRoutes: Routes = [
         TeamsComponent,
         WelcomeComponent,
         NotificationComponent,
+        RaceCoursesComponent,
     ],
     imports: [
         RouterModule.forRoot(

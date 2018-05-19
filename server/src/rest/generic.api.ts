@@ -116,7 +116,7 @@ export class GenericApi {
     }
 }
 
-export type QueryRoot = 'TeamMember' | 'Races' | 'Runners'; // add more when other roots are created
+export type QueryRoot = 'TeamMember' | 'Races' | 'Runners' | 'Courses'; // add more when other roots are created
 
 const ALL_COLUMNS: Map<QueryRoot, ColumnDefinition[]> = new Map();
 ALL_COLUMNS.set('TeamMember', [
@@ -213,6 +213,21 @@ ALL_COLUMNS.set('Races', [
     {
         id: 'raceId',
         el: 'Race.id',
+        readonly: true,
+        hidden: true
+    }
+]);
+
+ALL_COLUMNS.set('Courses', [
+    {
+        header: 'Course name',
+        id: 'name',
+        el: 'CourseFamily.name',
+        // patchEl: 'CourseFamily#raceId.name',
+    },
+    {
+        id: 'raceId',
+        el: 'CourseFamily.race>race.id',
         readonly: true,
         hidden: true
     }

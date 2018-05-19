@@ -132,5 +132,22 @@ export class RaceApi {
             res.status(RestApiStatusCodes.SUCCESS_200_OK).send(data);
         });
 
+        app.get('/api/generic/races/:raceId/courses', async (req: Request, res: Response) => {
+            try {
+
+                const raceId = parseInt(req.params.raceId)
+
+                const cols = this.genericApi.getColumns('Courses'); // TODO: filter with the actually requested columns
+                const data = await this.genericApi.queryForColumns(this.databaseCtrl.connection, cols, q => {
+                    q.where("raceId = :raceId", { raceId });
+                });
+                res.status(RestApiStatusCodes.SUCCESS_200_OK).send(data);
+            } catch (e) {
+                const err: ApiError = { code: 'DatabaseError', short: `Could not get the race courses`, detail: `${e}` };
+                LOGGER.error(err.short, e);
+                res.status(RestApiStatusCodes.SERVER_500_INTERNAL_SERVER_ERROR).send(err);
+            }
+        });
+
     }
 }

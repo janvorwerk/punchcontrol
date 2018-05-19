@@ -24,7 +24,7 @@ export class ErrorInterceptor implements HttpInterceptor {
             if (isApiError(err.error)) {
                 this.notificationService.notify({ level: 'error', short: err.error.short, detail: err.error.detail });
             } else {
-                this.notificationService.notify({ level: 'error', short: 'Unpecpected error', detail: JSON.stringify(err.error) });
+                this.notificationService.notify({ level: 'error', short: 'Unexpected error', detail: JSON.stringify(err.error) });
             }
             return new ErrorObservable(err);
         }));
