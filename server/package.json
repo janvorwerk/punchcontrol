@@ -42,6 +42,6 @@
         "@types/xml2js": "^0.4.2",
         "nodemon": "^1.14.3",
         "tslint": "^5.8.0",
-        "typescript": "^2.6.1"
+        "typescript": "^2.7.1"
     }
 }
